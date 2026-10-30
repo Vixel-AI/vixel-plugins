@@ -1,6 +1,6 @@
 {
   "name": "vixel-creator",
-  "version": "1.0.0-alpha.4",
+  "version": "1.0.0-alpha.5",
   "description": "Make films in your Vixel Works: scripts, production plans, quoted image and video production, review and export, with browser OAuth.",
   "author": {
     "name": "Vixel AI",
@@ -32,6 +32,7 @@
       "Write"
     ],
     "websiteURL": "https://drama.vixelai.com/creator/mcp",
+    "supportURL": "https://drama.vixelai.com/creator/mcp",
     "privacyPolicyURL": "https://www.vixelai.com/privacy-policy",
     "termsOfServiceURL": "https://www.vixelai.com/tos",
     "defaultPrompt": [
