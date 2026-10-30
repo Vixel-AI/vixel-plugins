@@ -1,6 +1,6 @@
 # Vixel Film for Codex
 
-Version `1.0.0-alpha.5` connects Codex to your Vixel account through
+Version `1.0.0-alpha.6` connects Codex to your Vixel account through
 MCP contract `film-v1` with browser OAuth. Make a film inside a Vixel Work:
 
 1. Draft the Script, save it and approve it.

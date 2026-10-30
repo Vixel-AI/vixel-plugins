@@ -92,7 +92,9 @@ is no raw prompt-to-media tool. Do not call Vixel's internal conversational Agen
    same inputs, returned `quoteId`, an explicit `maxCredits`, and a stable
    `idempotencyKey`. OAuth connection consent alone is not user authorization to
    spend. If Vixel requests image preparation, use
-   `film_v1_production_frame_prepare`, review the candidate and quote again.
+   `film_v1_production_frame_prepare`, review the candidate, accept it with
+   `film_v1_asset_review` as the Shot's `storyboard` (the result's `adoptAs`),
+   leave the keyframe empty, then read the Work and quote again.
 5. Track `film_v1_job` using returned `projectId` and `jobId` (`job.id` in the
    response). On an unknown submission outcome use `film_v1_request` with the
    original key. Never generate a replacement to resolve a timeout.
