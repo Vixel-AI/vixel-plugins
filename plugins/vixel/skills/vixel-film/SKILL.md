@@ -7,7 +7,8 @@ description: Make or revise a short film, character, storyboard image or video w
 
 The `vixel` MCP server carries Vixel's current filmmaking method. Before acting,
 read the `vixel://skills/vixel-film` resource (the same text as the
-`make_short_film` prompt) and follow it.
+`make_short_film` prompt) and follow it. If the `vixel` tools are missing,
+connect first (below).
 
 - Every image and video is produced inside a Work. Choose an existing Work or
   create one, save the Script and get the creator's approval, save the Story
@@ -20,5 +21,21 @@ read the `vixel://skills/vixel-film` resource (the same text as the
 - Preparing a release is not publishing. Report the Work link and anything you
   could not verify.
 
-If the `vixel` tools are missing or unauthorized, run `/mcp`, select `vixel`
-and choose Authenticate, then approve access in the browser.
+## Connect Vixel first
+
+These steps need the `vixel` MCP tools. If they are missing, ask the creator
+before changing their agent's configuration, then connect with browser sign-in
+(no API key):
+
+- Claude Code: `claude mcp add --transport http vixel https://drama.vixelai.com/api/mcp`,
+  then `/mcp`, select `vixel` and choose Authenticate. With the Vixel plugin
+  installed, only the `/mcp` step is needed.
+- Codex: `codex mcp add vixel --url https://drama.vixelai.com/api/mcp`, then
+  `codex mcp login vixel --scopes film.read,film.write,film.generate,offline_access`,
+  and start a new task.
+- Cursor and other clients: add the MCP server URL
+  `https://drama.vixelai.com/api/mcp` and connect, or follow
+  <https://drama.vixelai.com/creator/mcp>.
+
+The creator approves access in the browser. Never ask for or paste passwords,
+tokens or authorization codes.

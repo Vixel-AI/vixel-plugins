@@ -28,6 +28,16 @@ codex plugin add vixel-creator@vixel-ai
 
 Start a new Codex task and approve access in the browser when asked.
 
+## Any agent: the Skill only
+
+```sh
+npx skills add Vixel-AI/vixel-plugins
+```
+
+This installs the `vixel-film` Skill for Claude Code, Codex, Cursor and other
+agents the [skills](https://www.npmjs.com/package/skills) installer supports.
+The Skill explains how to connect Vixel when the tools are not set up yet.
+
 ## Other agents
 
 Any client that supports remote MCP servers with OAuth can connect to
