@@ -1,0 +1,46 @@
+{
+  "name": "vixel-creator",
+  "version": "1.0.0-alpha.4",
+  "description": "Make films in your Vixel Works: scripts, production plans, quoted image and video production, review and export, with browser OAuth.",
+  "author": {
+    "name": "Vixel AI",
+    "url": "https://www.vixelai.com/"
+  },
+  "homepage": "https://drama.vixelai.com/creator/mcp",
+  "repository": "https://github.com/Vixel-AI/vixel-plugins",
+  "license": "Proprietary",
+  "keywords": [
+    "vixel",
+    "interactive-film",
+    "film-game",
+    "creator",
+    "director-skill",
+    "storyboard",
+    "video"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "Vixel Film",
+    "shortDescription": "Make films in your Vixel Works",
+    "longDescription": "Write and approve a Script, plan characters and shots, then produce quoted images and video inside a Vixel Work. Review results, edit the Timeline and finish titles with Remotion.",
+    "developerName": "Vixel AI",
+    "category": "Creativity",
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "https://drama.vixelai.com/creator/mcp",
+    "privacyPolicyURL": "https://www.vixelai.com/privacy-policy",
+    "termsOfServiceURL": "https://www.vixelai.com/tos",
+    "defaultPrompt": [
+      "Make a 60-second short film from my idea with Vixel",
+      "Show my Vixel Works and what is left to finish",
+      "Check my Vixel production Job"
+    ],
+    "brandColor": "#38BDF8",
+    "composerIcon": "./assets/icon.svg",
+    "logo": "./assets/logo.svg"
+  }
+}

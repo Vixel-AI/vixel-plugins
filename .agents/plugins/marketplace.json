@@ -1,0 +1,20 @@
+{
+  "name": "vixel-ai",
+  "interface": {
+    "displayName": "Vixel AI"
+  },
+  "plugins": [
+    {
+      "name": "vixel-creator",
+      "source": {
+        "source": "local",
+        "path": "./plugins/vixel-creator"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Creativity"
+    }
+  ]
+}

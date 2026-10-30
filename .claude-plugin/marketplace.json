@@ -1,0 +1,20 @@
+{
+  "name": "vixel",
+  "owner": {
+    "name": "Vixel AI",
+    "url": "https://www.vixelai.com/"
+  },
+  "metadata": {
+    "description": "Vixel plugins for making films with your AI agent."
+  },
+  "plugins": [
+    {
+      "name": "vixel",
+      "source": "./plugins/vixel",
+      "description": "Make films in your Vixel Works: Script, production plan, quoted image and video production, review and Remotion finishing.",
+      "version": "1.0.0-alpha.1",
+      "category": "creativity",
+      "homepage": "https://drama.vixelai.com/creator/mcp"
+    }
+  ]
+}

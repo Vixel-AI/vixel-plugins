@@ -1,0 +1,21 @@
+{
+  "mcp": {
+    "contractVersion": "film-v1",
+    "endpoint": "https://drama.vixelai.com/api/mcp",
+    "scopes": [
+      "film.read",
+      "film.write",
+      "film.generate",
+      "offline_access"
+    ],
+    "serverName": "vixel-film",
+    "toolCount": 34,
+    "toolSchemaSha256": "c1ffe5fac66453dfb51851243915c196a2f7c078e8648ef2aa5b675c1b369cef"
+  },
+  "plugin": {
+    "name": "vixel-creator",
+    "releaseChannel": "developer-preview",
+    "version": "1.0.0-alpha.4"
+  },
+  "schemaVersion": 1
+}

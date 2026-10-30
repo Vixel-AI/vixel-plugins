@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "vixel": {
+      "type": "http",
+      "url": "https://drama.vixelai.com/api/mcp"
+    }
+  }
+}

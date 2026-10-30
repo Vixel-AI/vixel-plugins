@@ -1,0 +1,2712 @@
+{
+  "schemaVersion": 1,
+  "server": {
+    "contractVersion": "film-v1",
+    "endpoint": "https://drama.vixelai.com/api/mcp",
+    "name": "vixel-film",
+    "scopes": [
+      "film.read",
+      "film.write",
+      "film.generate",
+      "offline_access"
+    ]
+  },
+  "tools": [
+    {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false,
+        "readOnlyHint": true
+      },
+      "description": "Read your Vixel account and current credit balance.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false,
+        "properties": {},
+        "type": "object"
+      },
+      "name": "film_v1_account",
+      "policy": {
+        "approval": "none",
+        "execution": "read",
+        "requiredScopes": [
+          "film.read"
+        ],
+        "requiresExpectedWorkVersion": false,
+        "requiresIdempotencyKey": false
+      }
+    },
+    {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true,
+        "readOnlyHint": false
+      },
+      "description": "Copy a selected Generator asset into an explicit Work for review. Does not adopt it.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false,
+        "properties": {
+          "expectedRevisionId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          },
+          "expectedWriteVersion": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "idempotencyKey": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{7,127}$",
+            "type": "string"
+          },
+          "projectId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          },
+          "sourceAssetId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "projectId",
+          "expectedRevisionId",
+          "expectedWriteVersion",
+          "sourceAssetId",
+          "idempotencyKey"
+        ],
+        "type": "object"
+      },
+      "name": "film_v1_add_to_work",
+      "policy": {
+        "approval": "explicit user authorization",
+        "execution": "mutation",
+        "requiredScopes": [
+          "film.write"
+        ],
+        "requiresExpectedWorkVersion": true,
+        "requiresIdempotencyKey": true
+      }
+    },
+    {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true,
+        "readOnlyHint": false
+      },
+      "description": "Explicitly accept or reject a reviewed asset for an exact Work target. Requires creator authorization; never infer acceptance from generation completion.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false,
+        "properties": {
+          "adoptionMode": {
+            "enum": [
+              "original_upload_storyboard",
+              "original_upload_element"
+            ],
+            "type": "string"
+          },
+          "assetId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          },
+          "decision": {
+            "enum": [
+              "accept",
+              "reject"
+            ],
+            "type": "string"
+          },
+          "expectedRevisionId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          },
+          "expectedWriteVersion": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "idempotencyKey": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{7,127}$",
+            "type": "string"
+          },
+          "note": {
+            "maxLength": 4096,
+            "type": "string"
+          },
+          "projectId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          },
+          "target": {
+            "oneOf": [
+              {
+                "additionalProperties": false,
+                "properties": {
+                  "id": {
+                    "format": "uuid",
+                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+                    "type": "string"
+                  },
+                  "kind": {
+                    "const": "element",
+                    "type": "string"
+                  },
+                  "slot": {
+                    "const": "accepted_asset",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "kind",
+                  "id",
+                  "slot"
+                ],
+                "type": "object"
+              },
+              {
+                "additionalProperties": false,
+                "properties": {
+                  "id": {
+                    "format": "uuid",
+                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+                    "type": "string"
+                  },
+                  "kind": {
+                    "const": "shot",
+                    "type": "string"
+                  },
+                  "slot": {
+                    "enum": [
+                      "storyboard",
+                      "keyframe",
+                      "video"
+                    ],
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "kind",
+                  "id",
+                  "slot"
+                ],
+                "type": "object"
+              },
+              {
+                "additionalProperties": false,
+                "properties": {
+                  "id": {
+                    "format": "uuid",
+                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+                    "type": "string"
+                  },
+                  "kind": {
+                    "const": "scene",
+                    "type": "string"
+                  },
+                  "slot": {
+                    "const": "video",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "kind",
+                  "id",
+                  "slot"
+                ],
+                "type": "object"
+              }
+            ]
+          }
+        },
+        "required": [
+          "projectId",
+          "expectedRevisionId",
+          "expectedWriteVersion",
+          "idempotencyKey",
+          "assetId",
+          "decision",
+          "target"
+        ],
+        "type": "object"
+      },
+      "name": "film_v1_asset_review",
+      "policy": {
+        "approval": "explicit user authorization",
+        "execution": "mutation",
+        "requiredScopes": [
+          "film.write"
+        ],
+        "requiresExpectedWorkVersion": true,
+        "requiresIdempotencyKey": true
+      }
+    },
+    {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false,
+        "readOnlyHint": true
+      },
+      "description": "List results from the same Generator My Assets library used by the website.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false,
+        "properties": {},
+        "type": "object"
+      },
+      "name": "film_v1_assets",
+      "policy": {
+        "approval": "none",
+        "execution": "read",
+        "requiredScopes": [
+          "film.read"
+        ],
+        "requiresExpectedWorkVersion": false,
+        "requiresIdempotencyKey": false
+      }
+    },
+    {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true,
+        "readOnlyHint": false
+      },
+      "description": "Create or reuse your private Generator workspace for reference uploads.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false,
+        "properties": {},
+        "type": "object"
+      },
+      "name": "film_v1_ensure_workspace",
+      "policy": {
+        "approval": "explicit user authorization",
+        "execution": "mutation",
+        "requiredScopes": [
+          "film.write"
+        ],
+        "requiresExpectedWorkVersion": false,
+        "requiresIdempotencyKey": false
+      }
+    },
+    {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false,
+        "readOnlyHint": true
+      },
+      "description": "Read the same accepted mainline cut as browser Preview, with owned download paths and export entitlement. Snapshot only; does not render or publish.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false,
+        "properties": {
+          "expectedRevisionId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          },
+          "expectedWriteVersion": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "projectId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "projectId",
+          "expectedRevisionId",
+          "expectedWriteVersion"
+        ],
+        "type": "object"
+      },
+      "name": "film_v1_export_manifest",
+      "policy": {
+        "approval": "none",
+        "execution": "read",
+        "requiredScopes": [
+          "film.read"
+        ],
+        "requiresExpectedWorkVersion": true,
+        "requiresIdempotencyKey": false
+      }
+    },
+    {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false,
+        "readOnlyHint": true
+      },
+      "description": "Get the owned Work editor or My Assets URL.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false,
+        "properties": {
+          "projectId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "name": "film_v1_handoff",
+      "policy": {
+        "approval": "none",
+        "execution": "read",
+        "requiredScopes": [
+          "film.read"
+        ],
+        "requiresExpectedWorkVersion": false,
+        "requiresIdempotencyKey": false
+      }
+    },
+    {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false,
+        "readOnlyHint": true
+      },
+      "description": "Read an asynchronous Job and its candidate or accepted asset.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false,
+        "properties": {
+          "jobId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          },
+          "projectId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "projectId",
+          "jobId"
+        ],
+        "type": "object"
+      },
+      "name": "film_v1_job",
+      "policy": {
+        "approval": "none",
+        "execution": "read",
+        "requiredScopes": [
+          "film.read"
+        ],
+        "requiresExpectedWorkVersion": false,
+        "requiresIdempotencyKey": false
+      }
+    },
+    {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false,
+        "readOnlyHint": true
+      },
+      "description": "Read the live configured Film model catalog and capabilities; availability is not provider execution proof.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false,
+        "properties": {},
+        "type": "object"
+      },
+      "name": "film_v1_models",
+      "policy": {
+        "approval": "none",
+        "execution": "read",
+        "requiredScopes": [
+          "film.read"
+        ],
+        "requiresExpectedWorkVersion": false,
+        "requiresIdempotencyKey": false
+      }
+    },
+    {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true,
+        "readOnlyHint": false
+      },
+      "description": "Replace the complete production plan with Elements and Shots on the exact revision. Preserve unrelated targets. The initial plan requires a saved Script. Does not approve media or start generation.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false,
+        "properties": {
+          "elements": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "description": {
+                  "maxLength": 32768,
+                  "type": "string"
+                },
+                "elementKey": {
+                  "maxLength": 80,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "kind": {
+                  "enum": [
+                    "character",
+                    "location",
+                    "prop",
+                    "voice"
+                  ],
+                  "type": "string"
+                },
+                "name": {
+                  "maxLength": 255,
+                  "minLength": 1,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "elementKey",
+                "kind",
+                "name"
+              ],
+              "type": "object"
+            },
+            "maxItems": 200,
+            "minItems": 1,
+            "type": "array"
+          },
+          "expectedRevisionId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          },
+          "expectedWriteVersion": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "idempotencyKey": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{7,127}$",
+            "type": "string"
+          },
+          "projectId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          },
+          "shots": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "action": {
+                  "maxLength": 32768,
+                  "type": "string"
+                },
+                "audioCue": {
+                  "maxLength": 32768,
+                  "type": "string"
+                },
+                "camera": {
+                  "maxLength": 32768,
+                  "type": "string"
+                },
+                "durationMs": {
+                  "maximum": 15000,
+                  "minimum": 1000,
+                  "type": "integer"
+                },
+                "prompt": {
+                  "maxLength": 32768,
+                  "type": "string"
+                },
+                "purpose": {
+                  "maxLength": 32768,
+                  "type": "string"
+                },
+                "sceneKey": {
+                  "maxLength": 80,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "shotKey": {
+                  "maxLength": 80,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "title": {
+                  "maxLength": 255,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "visualElementKeys": {
+                  "items": {
+                    "maxLength": 80,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "maxItems": 200,
+                  "type": "array"
+                }
+              },
+              "required": [
+                "shotKey",
+                "sceneKey",
+                "title",
+                "durationMs"
+              ],
+              "type": "object"
+            },
+            "maxItems": 2000,
+            "minItems": 1,
+            "type": "array"
+          }
+        },
+        "required": [
+          "projectId",
+          "expectedRevisionId",
+          "expectedWriteVersion",
+          "idempotencyKey",
+          "elements",
+          "shots"
+        ],
+        "type": "object"
+      },
+      "name": "film_v1_plan_save",
+      "policy": {
+        "approval": "explicit user authorization",
+        "execution": "mutation",
+        "requiredScopes": [
+          "film.write"
+        ],
+        "requiresExpectedWorkVersion": true,
+        "requiresIdempotencyKey": true
+      }
+    },
+    {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true,
+        "readOnlyHint": false
+      },
+      "description": "Prepare a reviewable opening-image candidate for a Shot. Does not adopt it, generate media or charge credits.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false,
+        "properties": {
+          "assetId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          },
+          "expectedRevisionId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          },
+          "expectedWriteVersion": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "idempotencyKey": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{7,127}$",
+            "type": "string"
+          },
+          "projectId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          },
+          "shotId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "projectId",
+          "expectedRevisionId",
+          "expectedWriteVersion",
+          "assetId",
+          "shotId",
+          "idempotencyKey"
+        ],
+        "type": "object"
+      },
+      "name": "film_v1_production_frame_prepare",
+      "policy": {
+        "approval": "explicit user authorization",
+        "execution": "mutation",
+        "requiredScopes": [
+          "film.write"
+        ],
+        "requiresExpectedWorkVersion": true,
+        "requiresIdempotencyKey": true
+      }
+    },
+    {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true,
+        "readOnlyHint": false
+      },
+      "description": "Start the exact approved production quote within the user's credit ceiling. May spend credits. Retry the original body/key; review results before adoption.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false,
+        "properties": {
+          "approvedScreenplayHash": {
+            "pattern": "^[a-f0-9]{64}$",
+            "type": "string"
+          },
+          "direction": {
+            "default": "",
+            "maxLength": 2000,
+            "type": "string"
+          },
+          "expectedRevisionId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          },
+          "expectedWriteVersion": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "idempotencyKey": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{7,127}$",
+            "type": "string"
+          },
+          "maxCredits": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "mediaKind": {
+            "enum": [
+              "image",
+              "video"
+            ],
+            "type": "string"
+          },
+          "options": {
+            "additionalProperties": false,
+            "default": {},
+            "properties": {
+              "modelId": {
+                "maxLength": 200,
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "projectId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          },
+          "quoteId": {
+            "pattern": "^[a-f0-9]{64}$",
+            "type": "string"
+          },
+          "repair": {
+            "default": "none",
+            "enum": [
+              "none",
+              "speech",
+              "silence",
+              "identity",
+              "composition"
+            ],
+            "type": "string"
+          },
+          "target": {
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+                "type": "string"
+              },
+              "kind": {
+                "enum": [
+                  "element",
+                  "shot"
+                ],
+                "type": "string"
+              }
+            },
+            "required": [
+              "kind",
+              "id"
+            ],
+            "type": "object"
+          }
+        },
+        "required": [
+          "projectId",
+          "expectedRevisionId",
+          "expectedWriteVersion",
+          "approvedScreenplayHash",
+          "target",
+          "mediaKind",
+          "quoteId",
+          "maxCredits",
+          "idempotencyKey"
+        ],
+        "type": "object"
+      },
+      "name": "film_v1_production_generate",
+      "policy": {
+        "approval": "explicit user authorization",
+        "execution": "mutation",
+        "requiredScopes": [
+          "film.write",
+          "film.generate"
+        ],
+        "requiresExpectedWorkVersion": true,
+        "requiresIdempotencyKey": true
+      }
+    },
+    {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true,
+        "readOnlyHint": false
+      },
+      "description": "Save creative beats and cast as a production plan for the explicitly approved Script and existing Story. Replaces the full plan; preserve unrelated content. No media or charge.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false,
+        "properties": {
+          "approvedScreenplayHash": {
+            "pattern": "^[a-f0-9]{64}$",
+            "type": "string"
+          },
+          "beats": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "action": {
+                  "maxLength": 4000,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "ambience": {
+                  "maxLength": 4000,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "dialogue": {
+                  "items": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "delivery": {
+                        "default": "on_screen",
+                        "enum": [
+                          "on_screen",
+                          "voice_over"
+                        ],
+                        "type": "string"
+                      },
+                      "speaker": {
+                        "maxLength": 100,
+                        "minLength": 1,
+                        "pattern": "^[^:\\n\"“”]+$",
+                        "type": "string"
+                      },
+                      "text": {
+                        "maxLength": 500,
+                        "minLength": 1,
+                        "pattern": "^[^\\n\"“”]+$",
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "speaker",
+                      "text"
+                    ],
+                    "type": "object"
+                  },
+                  "maxItems": 1,
+                  "type": "array"
+                },
+                "durationMs": {
+                  "maximum": 15000,
+                  "minimum": 5000,
+                  "multipleOf": 1000,
+                  "type": "integer"
+                },
+                "music": {
+                  "maxLength": 4000,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "openingFrame": {
+                  "maxLength": 4000,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "sceneKey": {
+                  "maxLength": 80,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "shotKey": {
+                  "maxLength": 80,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "title": {
+                  "maxLength": 255,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "visualElementKeys": {
+                  "items": {
+                    "maxLength": 80,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "maxItems": 100,
+                  "type": "array"
+                }
+              },
+              "required": [
+                "shotKey",
+                "sceneKey",
+                "title",
+                "action",
+                "durationMs",
+                "dialogue",
+                "visualElementKeys"
+              ],
+              "type": "object"
+            },
+            "maxItems": 100,
+            "minItems": 1,
+            "type": "array"
+          },
+          "elements": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "description": {
+                  "maxLength": 32768,
+                  "type": "string"
+                },
+                "elementKey": {
+                  "maxLength": 80,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "kind": {
+                  "enum": [
+                    "character",
+                    "location",
+                    "prop",
+                    "voice"
+                  ],
+                  "type": "string"
+                },
+                "name": {
+                  "maxLength": 255,
+                  "minLength": 1,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "elementKey",
+                "kind",
+                "name"
+              ],
+              "type": "object"
+            },
+            "maxItems": 200,
+            "minItems": 1,
+            "type": "array"
+          },
+          "expectedRevisionId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          },
+          "expectedWriteVersion": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "idempotencyKey": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{7,127}$",
+            "type": "string"
+          },
+          "projectId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "projectId",
+          "expectedRevisionId",
+          "expectedWriteVersion",
+          "approvedScreenplayHash",
+          "idempotencyKey",
+          "elements",
+          "beats"
+        ],
+        "type": "object"
+      },
+      "name": "film_v1_production_plan",
+      "policy": {
+        "approval": "explicit user authorization",
+        "execution": "mutation",
+        "requiredScopes": [
+          "film.write"
+        ],
+        "requiresExpectedWorkVersion": true,
+        "requiresIdempotencyKey": true
+      }
+    },
+    {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false,
+        "readOnlyHint": true
+      },
+      "description": "Quote an image or video for an exact Element or Shot of the Work. This is how agents make media: Vixel prepares prompts and references from the approved Script and production plan. User direction describes the desired result. No Job, crop, mutation or charge.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false,
+        "properties": {
+          "approvedScreenplayHash": {
+            "pattern": "^[a-f0-9]{64}$",
+            "type": "string"
+          },
+          "direction": {
+            "default": "",
+            "maxLength": 2000,
+            "type": "string"
+          },
+          "expectedRevisionId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          },
+          "expectedWriteVersion": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "mediaKind": {
+            "enum": [
+              "image",
+              "video"
+            ],
+            "type": "string"
+          },
+          "options": {
+            "additionalProperties": false,
+            "default": {},
+            "properties": {
+              "modelId": {
+                "maxLength": 200,
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "projectId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          },
+          "repair": {
+            "default": "none",
+            "enum": [
+              "none",
+              "speech",
+              "silence",
+              "identity",
+              "composition"
+            ],
+            "type": "string"
+          },
+          "target": {
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+                "type": "string"
+              },
+              "kind": {
+                "enum": [
+                  "element",
+                  "shot"
+                ],
+                "type": "string"
+              }
+            },
+            "required": [
+              "kind",
+              "id"
+            ],
+            "type": "object"
+          }
+        },
+        "required": [
+          "projectId",
+          "expectedRevisionId",
+          "expectedWriteVersion",
+          "approvedScreenplayHash",
+          "target",
+          "mediaKind"
+        ],
+        "type": "object"
+      },
+      "name": "film_v1_production_quote",
+      "policy": {
+        "approval": "none",
+        "execution": "read",
+        "requiredScopes": [
+          "film.read"
+        ],
+        "requiresExpectedWorkVersion": true,
+        "requiresIdempotencyKey": false
+      }
+    },
+    {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false,
+        "readOnlyHint": true
+      },
+      "description": "Read the canonical Work, revision, Script documents, scenes, Elements, Shots, assets and Timeline. Use returned IDs and write version, never guess the latest Work.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false,
+        "properties": {
+          "projectId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "projectId"
+        ],
+        "type": "object"
+      },
+      "name": "film_v1_project",
+      "policy": {
+        "approval": "none",
+        "execution": "read",
+        "requiredScopes": [
+          "film.read"
+        ],
+        "requiresExpectedWorkVersion": false,
+        "requiresIdempotencyKey": false
+      }
+    },
+    {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true,
+        "readOnlyHint": false
+      },
+      "description": "Start a new film, image or video here: every Vixel image and video is produced inside a Work. Creates an empty Work within the same account allowance as the website. Does not call Director, generate a Story or spend credits. Save its Script next.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false,
+        "properties": {
+          "aspectRatio": {
+            "default": "16:9",
+            "enum": [
+              "16:9",
+              "9:16"
+            ],
+            "type": "string"
+          },
+          "idempotencyKey": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{7,127}$",
+            "type": "string"
+          },
+          "premise": {
+            "default": "",
+            "maxLength": 16384,
+            "type": "string"
+          },
+          "title": {
+            "maxLength": 255,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "title",
+          "idempotencyKey"
+        ],
+        "type": "object"
+      },
+      "name": "film_v1_project_create",
+      "policy": {
+        "approval": "explicit user authorization",
+        "execution": "mutation",
+        "requiredScopes": [
+          "film.write"
+        ],
+        "requiresExpectedWorkVersion": false,
+        "requiresIdempotencyKey": true
+      }
+    },
+    {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false,
+        "readOnlyHint": true
+      },
+      "description": "List your existing Film Works before choosing an explicit project. Does not create a Work.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false,
+        "properties": {
+          "includeArchived": {
+            "default": false,
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "name": "film_v1_projects",
+      "policy": {
+        "approval": "none",
+        "execution": "read",
+        "requiredScopes": [
+          "film.read"
+        ],
+        "requiresExpectedWorkVersion": false,
+        "requiresIdempotencyKey": false
+      }
+    },
+    {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true,
+        "readOnlyHint": false
+      },
+      "description": "Prepare an immutable release from a reviewed accepted video. Does not post to any channel.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false,
+        "properties": {
+          "assetId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          },
+          "expectedRevisionId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          },
+          "expectedWriteVersion": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "idempotencyKey": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{7,127}$",
+            "type": "string"
+          },
+          "projectId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          },
+          "title": {
+            "maxLength": 255,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "projectId",
+          "expectedRevisionId",
+          "expectedWriteVersion",
+          "idempotencyKey",
+          "assetId",
+          "title"
+        ],
+        "type": "object"
+      },
+      "name": "film_v1_release_create",
+      "policy": {
+        "approval": "explicit user authorization",
+        "execution": "mutation",
+        "requiredScopes": [
+          "film.write"
+        ],
+        "requiresExpectedWorkVersion": true,
+        "requiresIdempotencyKey": true
+      }
+    },
+    {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true,
+        "readOnlyHint": false
+      },
+      "description": "Verify final MP4 bytes and save through the existing release artifact receipt owner.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false,
+        "properties": {
+          "byteSize": {
+            "exclusiveMinimum": 0,
+            "maximum": 134217728,
+            "type": "integer"
+          },
+          "durationMs": {
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "type": "integer"
+          },
+          "expectedRevisionId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          },
+          "expectedWriteVersion": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "idempotencyKey": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{7,127}$",
+            "type": "string"
+          },
+          "label": {
+            "maxLength": 200,
+            "minLength": 1,
+            "type": "string"
+          },
+          "mimeType": {
+            "const": "video/mp4",
+            "type": "string"
+          },
+          "projectId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          },
+          "sha256": {
+            "pattern": "^[a-f0-9]{64}$",
+            "type": "string"
+          },
+          "storageKey": {
+            "maxLength": 1024,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "projectId",
+          "expectedRevisionId",
+          "expectedWriteVersion",
+          "idempotencyKey",
+          "label",
+          "mimeType",
+          "byteSize",
+          "sha256",
+          "durationMs",
+          "storageKey"
+        ],
+        "type": "object"
+      },
+      "name": "film_v1_release_upload_finalize",
+      "policy": {
+        "approval": "explicit user authorization",
+        "execution": "mutation",
+        "requiredScopes": [
+          "film.write"
+        ],
+        "requiresExpectedWorkVersion": true,
+        "requiresIdempotencyKey": true
+      }
+    },
+    {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true,
+        "readOnlyHint": false
+      },
+      "description": "Prepare upload of a reviewed final MP4 for the exact Work revision. Does not publish externally.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false,
+        "properties": {
+          "byteSize": {
+            "exclusiveMinimum": 0,
+            "maximum": 134217728,
+            "type": "integer"
+          },
+          "durationMs": {
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "type": "integer"
+          },
+          "expectedRevisionId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          },
+          "expectedWriteVersion": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "idempotencyKey": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{7,127}$",
+            "type": "string"
+          },
+          "label": {
+            "maxLength": 200,
+            "minLength": 1,
+            "type": "string"
+          },
+          "mimeType": {
+            "const": "video/mp4",
+            "type": "string"
+          },
+          "projectId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          },
+          "sha256": {
+            "pattern": "^[a-f0-9]{64}$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "projectId",
+          "expectedRevisionId",
+          "expectedWriteVersion",
+          "idempotencyKey",
+          "label",
+          "mimeType",
+          "byteSize",
+          "sha256",
+          "durationMs"
+        ],
+        "type": "object"
+      },
+      "name": "film_v1_release_upload_intent",
+      "policy": {
+        "approval": "explicit user authorization",
+        "execution": "mutation",
+        "requiredScopes": [
+          "film.write"
+        ],
+        "requiresExpectedWorkVersion": true,
+        "requiresIdempotencyKey": true
+      }
+    },
+    {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false,
+        "readOnlyHint": true
+      },
+      "description": "List prepared revision-bound releases. Prepared does not mean published.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false,
+        "properties": {
+          "projectId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "projectId"
+        ],
+        "type": "object"
+      },
+      "name": "film_v1_releases",
+      "policy": {
+        "approval": "none",
+        "execution": "read",
+        "requiredScopes": [
+          "film.read"
+        ],
+        "requiresExpectedWorkVersion": false,
+        "requiresIdempotencyKey": false
+      }
+    },
+    {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false,
+        "readOnlyHint": true
+      },
+      "description": "Look up the original durable Job after a timeout; never create a replacement key.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false,
+        "properties": {
+          "idempotencyKey": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{7,127}$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "idempotencyKey"
+        ],
+        "type": "object"
+      },
+      "name": "film_v1_request",
+      "policy": {
+        "approval": "none",
+        "execution": "read",
+        "requiredScopes": [
+          "film.read"
+        ],
+        "requiresExpectedWorkVersion": false,
+        "requiresIdempotencyKey": true
+      }
+    },
+    {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true,
+        "readOnlyHint": false
+      },
+      "description": "Resume the same blocked Job after top-up; may spend credits.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false,
+        "properties": {
+          "jobId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          },
+          "projectId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "projectId",
+          "jobId"
+        ],
+        "type": "object"
+      },
+      "name": "film_v1_resume",
+      "policy": {
+        "approval": "explicit user authorization",
+        "execution": "mutation",
+        "requiredScopes": [
+          "film.write",
+          "film.generate"
+        ],
+        "requiresExpectedWorkVersion": false,
+        "requiresIdempotencyKey": false
+      }
+    },
+    {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true,
+        "readOnlyHint": false
+      },
+      "description": "Save the initial Script document before Story/Elements/Shots. Requires the exact Work revision and a stable key. No generation, approval or credits.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false,
+        "properties": {
+          "content": {
+            "maxLength": 1048576,
+            "minLength": 1,
+            "type": "string"
+          },
+          "expectedRevisionId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          },
+          "expectedWriteVersion": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "format": {
+            "default": "markdown",
+            "enum": [
+              "markdown",
+              "plain_text"
+            ],
+            "type": "string"
+          },
+          "idempotencyKey": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{7,127}$",
+            "type": "string"
+          },
+          "projectId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          },
+          "title": {
+            "maxLength": 255,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "projectId",
+          "expectedRevisionId",
+          "expectedWriteVersion",
+          "idempotencyKey",
+          "title",
+          "content"
+        ],
+        "type": "object"
+      },
+      "name": "film_v1_screenplay_create",
+      "policy": {
+        "approval": "explicit user authorization",
+        "execution": "mutation",
+        "requiredScopes": [
+          "film.write"
+        ],
+        "requiresExpectedWorkVersion": true,
+        "requiresIdempotencyKey": true
+      }
+    },
+    {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false,
+        "readOnlyHint": true
+      },
+      "description": "Read the current Work revision and canonical Script document, or null if absent. Does not create anything.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false,
+        "properties": {
+          "projectId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "projectId"
+        ],
+        "type": "object"
+      },
+      "name": "film_v1_screenplay_get",
+      "policy": {
+        "approval": "none",
+        "execution": "read",
+        "requiredScopes": [
+          "film.read"
+        ],
+        "requiresExpectedWorkVersion": false,
+        "requiresIdempotencyKey": false
+      }
+    },
+    {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true,
+        "readOnlyHint": false
+      },
+      "description": "Revise the exact existing Script document with a revision guard and stable key. Does not update Story/Plan, approve production or generate media.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false,
+        "properties": {
+          "content": {
+            "maxLength": 1048576,
+            "minLength": 1,
+            "type": "string"
+          },
+          "documentId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          },
+          "expectedRevisionId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          },
+          "expectedWriteVersion": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "format": {
+            "default": "markdown",
+            "enum": [
+              "markdown",
+              "plain_text"
+            ],
+            "type": "string"
+          },
+          "idempotencyKey": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{7,127}$",
+            "type": "string"
+          },
+          "projectId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          },
+          "title": {
+            "maxLength": 255,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "projectId",
+          "expectedRevisionId",
+          "expectedWriteVersion",
+          "idempotencyKey",
+          "title",
+          "content",
+          "documentId"
+        ],
+        "type": "object"
+      },
+      "name": "film_v1_screenplay_update",
+      "policy": {
+        "approval": "explicit user authorization",
+        "execution": "mutation",
+        "requiredScopes": [
+          "film.write"
+        ],
+        "requiresExpectedWorkVersion": true,
+        "requiresIdempotencyKey": true
+      }
+    },
+    {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true,
+        "readOnlyHint": false
+      },
+      "description": "Replace one Shot's visual Element bindings through the canonical owner. Preserve required on-screen identities.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false,
+        "properties": {
+          "expectedRevisionId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          },
+          "expectedWriteVersion": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "idempotencyKey": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{7,127}$",
+            "type": "string"
+          },
+          "projectId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          },
+          "shotId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          },
+          "visualElementKeys": {
+            "items": {
+              "maxLength": 255,
+              "minLength": 1,
+              "type": "string"
+            },
+            "maxItems": 100,
+            "type": "array"
+          }
+        },
+        "required": [
+          "projectId",
+          "expectedRevisionId",
+          "expectedWriteVersion",
+          "idempotencyKey",
+          "shotId",
+          "visualElementKeys"
+        ],
+        "type": "object"
+      },
+      "name": "film_v1_shot_references",
+      "policy": {
+        "approval": "explicit user authorization",
+        "execution": "mutation",
+        "requiredScopes": [
+          "film.write"
+        ],
+        "requiresExpectedWorkVersion": true,
+        "requiresIdempotencyKey": true
+      }
+    },
+    {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true,
+        "readOnlyHint": false
+      },
+      "description": "Replace the complete Story graph on the exact Work revision. Preserve unrelated scenes. Save the Script first. Returns the existing canonical mutation receipt; no media generation.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false,
+        "properties": {
+          "expectedRevisionId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          },
+          "expectedWriteVersion": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "idempotencyKey": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{7,127}$",
+            "type": "string"
+          },
+          "projectId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          },
+          "scenes": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "choice": {
+                  "anyOf": [
+                    {
+                      "additionalProperties": false,
+                      "properties": {
+                        "options": {
+                          "items": {
+                            "additionalProperties": false,
+                            "properties": {
+                              "label": {
+                                "maxLength": 160,
+                                "minLength": 1,
+                                "type": "string"
+                              },
+                              "targetSceneKey": {
+                                "maxLength": 80,
+                                "minLength": 1,
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "label",
+                              "targetSceneKey"
+                            ],
+                            "type": "object"
+                          },
+                          "maxItems": 3,
+                          "minItems": 2,
+                          "type": "array"
+                        },
+                        "prompt": {
+                          "maxLength": 4096,
+                          "minLength": 1,
+                          "type": "string"
+                        },
+                        "revealAtMs": {
+                          "maximum": 9007199254740991,
+                          "minimum": 0,
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "prompt",
+                        "revealAtMs",
+                        "options"
+                      ],
+                      "type": "object"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "durationMs": {
+                  "maximum": 3600000,
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                "isStart": {
+                  "type": "boolean"
+                },
+                "kind": {
+                  "enum": [
+                    "scene",
+                    "ending"
+                  ],
+                  "type": "string"
+                },
+                "nextSceneKey": {
+                  "anyOf": [
+                    {
+                      "maxLength": 80,
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "requiresVideo": {
+                  "type": "boolean"
+                },
+                "sceneKey": {
+                  "maxLength": 80,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "script": {
+                  "maxLength": 262144,
+                  "type": "string"
+                },
+                "summary": {
+                  "maxLength": 65536,
+                  "type": "string"
+                },
+                "title": {
+                  "maxLength": 255,
+                  "minLength": 1,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "sceneKey",
+                "kind",
+                "title",
+                "durationMs",
+                "isStart"
+              ],
+              "type": "object"
+            },
+            "maxItems": 200,
+            "minItems": 1,
+            "type": "array"
+          }
+        },
+        "required": [
+          "projectId",
+          "expectedRevisionId",
+          "expectedWriteVersion",
+          "idempotencyKey",
+          "scenes"
+        ],
+        "type": "object"
+      },
+      "name": "film_v1_story_save",
+      "policy": {
+        "approval": "explicit user authorization",
+        "execution": "mutation",
+        "requiredScopes": [
+          "film.write"
+        ],
+        "requiresExpectedWorkVersion": true,
+        "requiresIdempotencyKey": true
+      }
+    },
+    {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true,
+        "readOnlyHint": false
+      },
+      "description": "Reconcile the same Job under existing platform recovery rules.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false,
+        "properties": {
+          "jobId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          },
+          "projectId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "projectId",
+          "jobId"
+        ],
+        "type": "object"
+      },
+      "name": "film_v1_sync",
+      "policy": {
+        "approval": "explicit user authorization",
+        "execution": "mutation",
+        "requiredScopes": [
+          "film.write",
+          "film.generate"
+        ],
+        "requiresExpectedWorkVersion": false,
+        "requiresIdempotencyKey": false
+      }
+    },
+    {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true,
+        "readOnlyHint": false
+      },
+      "description": "Apply bounded typed Timeline edits to the exact revision; returns its durable receipt. Full-source retiming requires the creator's confirmation in web Preview. Does not generate media.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false,
+        "properties": {
+          "expectedRevisionId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          },
+          "expectedWriteVersion": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "idempotencyKey": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{7,127}$",
+            "type": "string"
+          },
+          "operations": {
+            "items": {
+              "oneOf": [
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "durationMs": {
+                      "exclusiveMinimum": 0,
+                      "maximum": 180000,
+                      "type": "integer"
+                    },
+                    "op": {
+                      "const": "fit_source_durations",
+                      "type": "string"
+                    },
+                    "sources": {
+                      "items": {
+                        "additionalProperties": false,
+                        "properties": {
+                          "assetId": {
+                            "format": "uuid",
+                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+                            "type": "string"
+                          },
+                          "durationMs": {
+                            "exclusiveMinimum": 0,
+                            "maximum": 60000,
+                            "type": "integer"
+                          },
+                          "shotId": {
+                            "format": "uuid",
+                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "shotId",
+                          "assetId",
+                          "durationMs"
+                        ],
+                        "type": "object"
+                      },
+                      "maxItems": 180,
+                      "minItems": 1,
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "op",
+                    "durationMs",
+                    "sources"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "durationMs": {
+                      "maximum": 60000,
+                      "minimum": 1000,
+                      "type": "integer"
+                    },
+                    "op": {
+                      "const": "set_shot_duration",
+                      "type": "string"
+                    },
+                    "shotId": {
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "op",
+                    "shotId",
+                    "durationMs"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "durationMs": {
+                      "maximum": 3600000,
+                      "minimum": 1000,
+                      "type": "integer"
+                    },
+                    "op": {
+                      "const": "set_final_scene_duration",
+                      "type": "string"
+                    },
+                    "sceneId": {
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "op",
+                    "sceneId",
+                    "durationMs"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "op": {
+                      "const": "move_shot",
+                      "type": "string"
+                    },
+                    "shotId": {
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+                      "type": "string"
+                    },
+                    "toIndex": {
+                      "maximum": 1999,
+                      "minimum": 0,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "op",
+                    "shotId",
+                    "toIndex"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "assetId": {
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+                      "type": "string"
+                    },
+                    "audioGroup": {
+                      "anyOf": [
+                        {
+                          "additionalProperties": false,
+                          "properties": {
+                            "id": {
+                              "format": "uuid",
+                              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+                              "type": "string"
+                            },
+                            "loop": {
+                              "type": "boolean"
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "loop"
+                          ],
+                          "type": "object"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "audioMuted": {
+                      "type": "boolean"
+                    },
+                    "clipId": {
+                      "anyOf": [
+                        {
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "durationMs": {
+                      "exclusiveMinimum": 0,
+                      "maximum": 3600000,
+                      "type": "integer"
+                    },
+                    "op": {
+                      "const": "upsert_audio_clip",
+                      "type": "string"
+                    },
+                    "sceneId": {
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+                      "type": "string"
+                    },
+                    "shotId": {
+                      "anyOf": [
+                        {
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "sourceStartMs": {
+                      "maximum": 3600000,
+                      "minimum": 0,
+                      "type": "integer"
+                    },
+                    "startMs": {
+                      "maximum": 9007199254740991,
+                      "minimum": 0,
+                      "type": "integer"
+                    },
+                    "trackKind": {
+                      "enum": [
+                        "dialogue",
+                        "music",
+                        "sfx"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "op",
+                    "clipId",
+                    "sceneId",
+                    "shotId",
+                    "assetId",
+                    "trackKind",
+                    "startMs",
+                    "durationMs"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "clipId": {
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+                      "type": "string"
+                    },
+                    "op": {
+                      "const": "delete_audio_clip",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "op",
+                    "clipId"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "assetId": {
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+                      "type": "string"
+                    },
+                    "audioMuted": {
+                      "type": "boolean"
+                    },
+                    "clipId": {
+                      "anyOf": [
+                        {
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "durationMs": {
+                      "exclusiveMinimum": 0,
+                      "maximum": 3600000,
+                      "type": "integer"
+                    },
+                    "freezeFrame": {
+                      "type": "boolean"
+                    },
+                    "op": {
+                      "const": "upsert_visual_clip",
+                      "type": "string"
+                    },
+                    "sceneId": {
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+                      "type": "string"
+                    },
+                    "shotId": {
+                      "anyOf": [
+                        {
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "sourceStartMs": {
+                      "maximum": 3600000,
+                      "minimum": 0,
+                      "type": "integer"
+                    },
+                    "startMs": {
+                      "maximum": 9007199254740991,
+                      "minimum": 0,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "op",
+                    "clipId",
+                    "sceneId",
+                    "shotId",
+                    "assetId",
+                    "startMs",
+                    "durationMs"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "assetId": {
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+                      "type": "string"
+                    },
+                    "op": {
+                      "const": "remove_projected_visual",
+                      "type": "string"
+                    },
+                    "sceneId": {
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+                      "type": "string"
+                    },
+                    "shotId": {
+                      "anyOf": [
+                        {
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "op",
+                    "sceneId",
+                    "shotId",
+                    "assetId"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "clipId": {
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+                      "type": "string"
+                    },
+                    "op": {
+                      "const": "delete_visual_clip",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "op",
+                    "clipId"
+                  ],
+                  "type": "object"
+                }
+              ]
+            },
+            "maxItems": 100,
+            "minItems": 1,
+            "type": "array"
+          },
+          "projectId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "projectId",
+          "expectedRevisionId",
+          "expectedWriteVersion",
+          "idempotencyKey",
+          "operations"
+        ],
+        "type": "object"
+      },
+      "name": "film_v1_timeline_patch",
+      "policy": {
+        "approval": "explicit user authorization",
+        "execution": "mutation",
+        "requiredScopes": [
+          "film.write"
+        ],
+        "requiresExpectedWorkVersion": true,
+        "requiresIdempotencyKey": true
+      }
+    },
+    {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true,
+        "readOnlyHint": false
+      },
+      "description": "Revert one existing Timeline receipt with the current revision guard.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false,
+        "properties": {
+          "expectedRevisionId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          },
+          "expectedWriteVersion": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "idempotencyKey": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{7,127}$",
+            "type": "string"
+          },
+          "projectId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          },
+          "receiptId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "projectId",
+          "expectedRevisionId",
+          "expectedWriteVersion",
+          "idempotencyKey",
+          "receiptId"
+        ],
+        "type": "object"
+      },
+      "name": "film_v1_timeline_undo",
+      "policy": {
+        "approval": "explicit user authorization",
+        "execution": "mutation",
+        "requiredScopes": [
+          "film.write"
+        ],
+        "requiresExpectedWorkVersion": true,
+        "requiresIdempotencyKey": true
+      }
+    },
+    {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true,
+        "readOnlyHint": false
+      },
+      "description": "Verify uploaded bytes and record a reference through the existing receipt boundary.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false,
+        "properties": {
+          "byteSize": {
+            "exclusiveMinimum": 0,
+            "maximum": 134217728,
+            "type": "integer"
+          },
+          "durationMs": {
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "type": "integer"
+          },
+          "expectedRevisionId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          },
+          "expectedWriteVersion": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "idempotencyKey": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{7,127}$",
+            "type": "string"
+          },
+          "label": {
+            "maxLength": 200,
+            "minLength": 1,
+            "type": "string"
+          },
+          "mimeType": {
+            "enum": [
+              "image/png",
+              "image/jpeg",
+              "image/webp",
+              "video/mp4"
+            ],
+            "type": "string"
+          },
+          "projectId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          },
+          "sha256": {
+            "pattern": "^[a-f0-9]{64}$",
+            "type": "string"
+          },
+          "storageKey": {
+            "maxLength": 1024,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "projectId",
+          "expectedRevisionId",
+          "expectedWriteVersion",
+          "idempotencyKey",
+          "label",
+          "mimeType",
+          "byteSize",
+          "sha256",
+          "storageKey"
+        ],
+        "type": "object"
+      },
+      "name": "film_v1_upload_finalize",
+      "policy": {
+        "approval": "explicit user authorization",
+        "execution": "mutation",
+        "requiredScopes": [
+          "film.write"
+        ],
+        "requiresExpectedWorkVersion": true,
+        "requiresIdempotencyKey": true
+      }
+    },
+    {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true,
+        "readOnlyHint": false
+      },
+      "description": "Prepare a bounded reference upload; send bytes only to the returned signed URL without OAuth headers.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false,
+        "properties": {
+          "byteSize": {
+            "exclusiveMinimum": 0,
+            "maximum": 134217728,
+            "type": "integer"
+          },
+          "durationMs": {
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991,
+            "type": "integer"
+          },
+          "expectedRevisionId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          },
+          "expectedWriteVersion": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "idempotencyKey": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{7,127}$",
+            "type": "string"
+          },
+          "label": {
+            "maxLength": 200,
+            "minLength": 1,
+            "type": "string"
+          },
+          "mimeType": {
+            "enum": [
+              "image/png",
+              "image/jpeg",
+              "image/webp",
+              "video/mp4"
+            ],
+            "type": "string"
+          },
+          "projectId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          },
+          "sha256": {
+            "pattern": "^[a-f0-9]{64}$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "projectId",
+          "expectedRevisionId",
+          "expectedWriteVersion",
+          "idempotencyKey",
+          "label",
+          "mimeType",
+          "byteSize",
+          "sha256"
+        ],
+        "type": "object"
+      },
+      "name": "film_v1_upload_intent",
+      "policy": {
+        "approval": "explicit user authorization",
+        "execution": "mutation",
+        "requiredScopes": [
+          "film.write"
+        ],
+        "requiresExpectedWorkVersion": true,
+        "requiresIdempotencyKey": true
+      }
+    },
+    {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false,
+        "readOnlyHint": true
+      },
+      "description": "Inspect your Generator workspace without creating one.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false,
+        "properties": {},
+        "type": "object"
+      },
+      "name": "film_v1_workspace",
+      "policy": {
+        "approval": "none",
+        "execution": "read",
+        "requiredScopes": [
+          "film.read"
+        ],
+        "requiresExpectedWorkVersion": false,
+        "requiresIdempotencyKey": false
+      }
+    }
+  ]
+}

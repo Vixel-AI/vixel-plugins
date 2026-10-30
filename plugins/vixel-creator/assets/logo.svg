@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title description">
+  <title id="title">Vixel Creator</title>
+  <desc id="description">A cinematic V mark for the Vixel interactive film-game creator.</desc>
+  <defs>
+    <radialGradient id="vixel-logo-field" cx="0" cy="0" r="1" gradientTransform="translate(154 118) rotate(48) scale(478)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#172C4A"/>
+      <stop offset="0.55" stop-color="#0A1527"/>
+      <stop offset="1" stop-color="#050A12"/>
+    </radialGradient>
+    <linearGradient id="vixel-logo-v" x1="104" y1="104" x2="406" y2="416" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#BAE6FD"/>
+      <stop offset="0.42" stop-color="#38BDF8"/>
+      <stop offset="1" stop-color="#6366F1"/>
+    </linearGradient>
+    <filter id="vixel-logo-glow" x="42" y="42" width="428" height="428" filterUnits="userSpaceOnUse">
+      <feGaussianBlur stdDeviation="18"/>
+    </filter>
+  </defs>
+  <rect width="512" height="512" rx="128" fill="url(#vixel-logo-field)"/>
+  <path d="M99 112 226 407h61L413 112h-90l-66 178-69-178H99Z" fill="#38BDF8" fill-opacity=".28" filter="url(#vixel-logo-glow)"/>
+  <path d="M99 112 226 407h61L413 112h-90l-66 178-69-178H99Z" fill="url(#vixel-logo-v)"/>
+  <path d="m257 290 31-84 38 86-39 115h-61l31-117Z" fill="#E0F2FE" fill-opacity=".88"/>
+  <path d="M84 91h344" stroke="#E0F2FE" stroke-opacity=".18" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="411" cy="91" r="7" fill="#7DD3FC"/>
+</svg>

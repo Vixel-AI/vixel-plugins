@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "vixel-creator": {
+      "type": "http",
+      "url": "https://drama.vixelai.com/api/mcp",
+      "scopes": [
+        "film.read",
+        "film.write",
+        "film.generate",
+        "offline_access"
+      ],
+      "note": "Vixel Film v1. Make media inside a Work: approve the Script, then production_quote and production_generate with explicit maxCredits and a stable idempotencyKey. No publish or social tools."
+    }
+  }
+}

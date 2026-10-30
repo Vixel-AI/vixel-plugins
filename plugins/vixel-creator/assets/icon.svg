@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">Vixel Creator</title>
+  <defs>
+    <linearGradient id="vixel-icon-bg" x1="8" y1="6" x2="56" y2="60" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7DD3FC"/>
+      <stop offset="0.52" stop-color="#38BDF8"/>
+      <stop offset="1" stop-color="#6366F1"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="16" fill="#07111F"/>
+  <path d="M11 15.5 28.7 50h7.2L53 15.5H42.4L32.3 38.7 21.9 15.5H11Z" fill="url(#vixel-icon-bg)"/>
+  <path d="m32.3 38.7 4.5-10.3 5.1 10.3-6 11.3h-7.2l3.6-11.3Z" fill="#E0F2FE" fill-opacity=".86"/>
+</svg>

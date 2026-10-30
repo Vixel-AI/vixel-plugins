@@ -1,0 +1,7 @@
+interface:
+  display_name: "Vixel Film"
+  short_description: "Make films in your Vixel Works"
+  brand_color: "#38BDF8"
+  default_prompt: "Make a short film from my idea with Vixel. Write the script first and wait for my review."
+policy:
+  allow_implicit_invocation: true
