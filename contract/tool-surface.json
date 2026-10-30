@@ -17,7 +17,8 @@
         "destructiveHint": false,
         "idempotentHint": true,
         "openWorldHint": false,
-        "readOnlyHint": true
+        "readOnlyHint": true,
+        "title": "Vixel account and credits"
       },
       "description": "Read your Vixel account and current credit balance.",
       "inputSchema": {
@@ -42,7 +43,8 @@
         "destructiveHint": false,
         "idempotentHint": true,
         "openWorldHint": true,
-        "readOnlyHint": false
+        "readOnlyHint": false,
+        "title": "Add an asset to a Work"
       },
       "description": "Copy a selected Generator asset into an explicit Work for review. Does not adopt it.",
       "inputSchema": {
@@ -96,10 +98,11 @@
     },
     {
       "annotations": {
-        "destructiveHint": false,
+        "destructiveHint": true,
         "idempotentHint": true,
         "openWorldHint": true,
-        "readOnlyHint": false
+        "readOnlyHint": false,
+        "title": "Accept or reject an asset"
       },
       "description": "Explicitly accept or reject a reviewed asset for an exact Work target. Requires creator authorization; never infer acceptance from generation completion.",
       "inputSchema": {
@@ -256,7 +259,8 @@
         "destructiveHint": false,
         "idempotentHint": true,
         "openWorldHint": false,
-        "readOnlyHint": true
+        "readOnlyHint": true,
+        "title": "List My Assets"
       },
       "description": "List results from the same Generator My Assets library used by the website.",
       "inputSchema": {
@@ -281,7 +285,8 @@
         "destructiveHint": false,
         "idempotentHint": true,
         "openWorldHint": true,
-        "readOnlyHint": false
+        "readOnlyHint": false,
+        "title": "Create the My Assets library"
       },
       "description": "Create or reuse your private Generator workspace for reference uploads.",
       "inputSchema": {
@@ -306,7 +311,8 @@
         "destructiveHint": false,
         "idempotentHint": true,
         "openWorldHint": false,
-        "readOnlyHint": true
+        "readOnlyHint": true,
+        "title": "Read the export manifest"
       },
       "description": "Read the same accepted mainline cut as browser Preview, with owned download paths and export entitlement. Snapshot only; does not render or publish.",
       "inputSchema": {
@@ -352,7 +358,8 @@
         "destructiveHint": false,
         "idempotentHint": true,
         "openWorldHint": false,
-        "readOnlyHint": true
+        "readOnlyHint": true,
+        "title": "Get the Work link"
       },
       "description": "Get the owned Work editor or My Assets URL.",
       "inputSchema": {
@@ -383,7 +390,8 @@
         "destructiveHint": false,
         "idempotentHint": true,
         "openWorldHint": false,
-        "readOnlyHint": true
+        "readOnlyHint": true,
+        "title": "Read a Job"
       },
       "description": "Read an asynchronous Job and its candidate or accepted asset.",
       "inputSchema": {
@@ -423,7 +431,8 @@
         "destructiveHint": false,
         "idempotentHint": true,
         "openWorldHint": false,
-        "readOnlyHint": true
+        "readOnlyHint": true,
+        "title": "List Vixel models"
       },
       "description": "Read the live configured Film model catalog and capabilities; availability is not provider execution proof.",
       "inputSchema": {
@@ -445,10 +454,11 @@
     },
     {
       "annotations": {
-        "destructiveHint": false,
+        "destructiveHint": true,
         "idempotentHint": true,
         "openWorldHint": true,
-        "readOnlyHint": false
+        "readOnlyHint": false,
+        "title": "Save Elements and Shots"
       },
       "description": "Replace the complete production plan with Elements and Shots on the exact revision. Preserve unrelated targets. The initial plan requires a saved Script. Does not approve media or start generation.",
       "inputSchema": {
@@ -606,7 +616,8 @@
         "destructiveHint": false,
         "idempotentHint": true,
         "openWorldHint": true,
-        "readOnlyHint": false
+        "readOnlyHint": false,
+        "title": "Prepare an opening frame"
       },
       "description": "Prepare a reviewable opening-image candidate for a Shot. Does not adopt it, generate media or charge credits.",
       "inputSchema": {
@@ -669,7 +680,8 @@
         "destructiveHint": false,
         "idempotentHint": true,
         "openWorldHint": true,
-        "readOnlyHint": false
+        "readOnlyHint": false,
+        "title": "Start production"
       },
       "description": "Start the exact approved production quote within the user's credit ceiling. May spend credits. Retry the original body/key; review results before adoption.",
       "inputSchema": {
@@ -792,10 +804,11 @@
     },
     {
       "annotations": {
-        "destructiveHint": false,
+        "destructiveHint": true,
         "idempotentHint": true,
         "openWorldHint": true,
-        "readOnlyHint": false
+        "readOnlyHint": false,
+        "title": "Save the production plan"
       },
       "description": "Save creative beats and cast as a production plan for the explicitly approved Script and existing Story. Replaces the full plan; preserve unrelated content. No media or charge.",
       "inputSchema": {
@@ -996,7 +1009,8 @@
         "destructiveHint": false,
         "idempotentHint": true,
         "openWorldHint": false,
-        "readOnlyHint": true
+        "readOnlyHint": true,
+        "title": "Quote production"
       },
       "description": "Quote an image or video for an exact Element or Shot of the Work. This is how agents make media: Vixel prepares prompts and references from the approved Script and production plan. User direction describes the desired result. No Job, crop, mutation or charge.",
       "inputSchema": {
@@ -1105,7 +1119,8 @@
         "destructiveHint": false,
         "idempotentHint": true,
         "openWorldHint": false,
-        "readOnlyHint": true
+        "readOnlyHint": true,
+        "title": "Read a Work"
       },
       "description": "Read the canonical Work, revision, Script documents, scenes, Elements, Shots, assets and Timeline. Use returned IDs and write version, never guess the latest Work.",
       "inputSchema": {
@@ -1139,7 +1154,8 @@
         "destructiveHint": false,
         "idempotentHint": true,
         "openWorldHint": true,
-        "readOnlyHint": false
+        "readOnlyHint": false,
+        "title": "Create a Work"
       },
       "description": "Start a new film, image or video here: every Vixel image and video is produced inside a Work. Creates an empty Work within the same account allowance as the website. Does not call Director, generate a Story or spend credits. Save its Script next.",
       "inputSchema": {
@@ -1191,7 +1207,8 @@
         "destructiveHint": false,
         "idempotentHint": true,
         "openWorldHint": false,
-        "readOnlyHint": true
+        "readOnlyHint": true,
+        "title": "List Works"
       },
       "description": "List your existing Film Works before choosing an explicit project. Does not create a Work.",
       "inputSchema": {
@@ -1221,7 +1238,8 @@
         "destructiveHint": false,
         "idempotentHint": true,
         "openWorldHint": true,
-        "readOnlyHint": false
+        "readOnlyHint": false,
+        "title": "Prepare a release"
       },
       "description": "Prepare an immutable release from a reviewed accepted video. Does not post to any channel.",
       "inputSchema": {
@@ -1284,7 +1302,8 @@
         "destructiveHint": false,
         "idempotentHint": true,
         "openWorldHint": true,
-        "readOnlyHint": false
+        "readOnlyHint": false,
+        "title": "Finish a final video upload"
       },
       "description": "Verify final MP4 bytes and save through the existing release artifact receipt owner.",
       "inputSchema": {
@@ -1369,7 +1388,8 @@
         "destructiveHint": false,
         "idempotentHint": true,
         "openWorldHint": true,
-        "readOnlyHint": false
+        "readOnlyHint": false,
+        "title": "Prepare a final video upload"
       },
       "description": "Prepare upload of a reviewed final MP4 for the exact Work revision. Does not publish externally.",
       "inputSchema": {
@@ -1448,7 +1468,8 @@
         "destructiveHint": false,
         "idempotentHint": true,
         "openWorldHint": false,
-        "readOnlyHint": true
+        "readOnlyHint": true,
+        "title": "List prepared releases"
       },
       "description": "List prepared revision-bound releases. Prepared does not mean published.",
       "inputSchema": {
@@ -1482,7 +1503,8 @@
         "destructiveHint": false,
         "idempotentHint": true,
         "openWorldHint": false,
-        "readOnlyHint": true
+        "readOnlyHint": true,
+        "title": "Find an original request"
       },
       "description": "Look up the original durable Job after a timeout; never create a replacement key.",
       "inputSchema": {
@@ -1515,7 +1537,8 @@
         "destructiveHint": false,
         "idempotentHint": true,
         "openWorldHint": true,
-        "readOnlyHint": false
+        "readOnlyHint": false,
+        "title": "Resume a Job after top-up"
       },
       "description": "Resume the same blocked Job after top-up; may spend credits.",
       "inputSchema": {
@@ -1556,7 +1579,8 @@
         "destructiveHint": false,
         "idempotentHint": true,
         "openWorldHint": true,
-        "readOnlyHint": false
+        "readOnlyHint": false,
+        "title": "Save the Script"
       },
       "description": "Save the initial Script document before Story/Elements/Shots. Requires the exact Work revision and a stable key. No generation, approval or credits.",
       "inputSchema": {
@@ -1627,7 +1651,8 @@
         "destructiveHint": false,
         "idempotentHint": true,
         "openWorldHint": false,
-        "readOnlyHint": true
+        "readOnlyHint": true,
+        "title": "Read the Script"
       },
       "description": "Read the current Work revision and canonical Script document, or null if absent. Does not create anything.",
       "inputSchema": {
@@ -1658,10 +1683,11 @@
     },
     {
       "annotations": {
-        "destructiveHint": false,
+        "destructiveHint": true,
         "idempotentHint": true,
         "openWorldHint": true,
-        "readOnlyHint": false
+        "readOnlyHint": false,
+        "title": "Revise the Script"
       },
       "description": "Revise the exact existing Script document with a revision guard and stable key. Does not update Story/Plan, approve production or generate media.",
       "inputSchema": {
@@ -1735,10 +1761,11 @@
     },
     {
       "annotations": {
-        "destructiveHint": false,
+        "destructiveHint": true,
         "idempotentHint": true,
         "openWorldHint": true,
-        "readOnlyHint": false
+        "readOnlyHint": false,
+        "title": "Set Shot references"
       },
       "description": "Replace one Shot's visual Element bindings through the canonical owner. Preserve required on-screen identities.",
       "inputSchema": {
@@ -1802,10 +1829,11 @@
     },
     {
       "annotations": {
-        "destructiveHint": false,
+        "destructiveHint": true,
         "idempotentHint": true,
         "openWorldHint": true,
-        "readOnlyHint": false
+        "readOnlyHint": false,
+        "title": "Save the Story"
       },
       "description": "Replace the complete Story graph on the exact Work revision. Preserve unrelated scenes. Save the Script first. Returns the existing canonical mutation receipt; no media generation.",
       "inputSchema": {
@@ -1976,7 +2004,8 @@
         "destructiveHint": false,
         "idempotentHint": true,
         "openWorldHint": true,
-        "readOnlyHint": false
+        "readOnlyHint": false,
+        "title": "Reconcile a Job"
       },
       "description": "Reconcile the same Job under existing platform recovery rules.",
       "inputSchema": {
@@ -2014,10 +2043,11 @@
     },
     {
       "annotations": {
-        "destructiveHint": false,
+        "destructiveHint": true,
         "idempotentHint": true,
         "openWorldHint": true,
-        "readOnlyHint": false
+        "readOnlyHint": false,
+        "title": "Edit the Timeline"
       },
       "description": "Apply bounded typed Timeline edits to the exact revision; returns its durable receipt. Full-source retiming requires the creator's confirmation in web Preview. Does not generate media.",
       "inputSchema": {
@@ -2456,10 +2486,11 @@
     },
     {
       "annotations": {
-        "destructiveHint": false,
+        "destructiveHint": true,
         "idempotentHint": true,
         "openWorldHint": true,
-        "readOnlyHint": false
+        "readOnlyHint": false,
+        "title": "Undo a Timeline edit"
       },
       "description": "Revert one existing Timeline receipt with the current revision guard.",
       "inputSchema": {
@@ -2516,7 +2547,8 @@
         "destructiveHint": false,
         "idempotentHint": true,
         "openWorldHint": true,
-        "readOnlyHint": false
+        "readOnlyHint": false,
+        "title": "Finish a reference upload"
       },
       "description": "Verify uploaded bytes and record a reference through the existing receipt boundary.",
       "inputSchema": {
@@ -2605,7 +2637,8 @@
         "destructiveHint": false,
         "idempotentHint": true,
         "openWorldHint": true,
-        "readOnlyHint": false
+        "readOnlyHint": false,
+        "title": "Prepare a reference upload"
       },
       "description": "Prepare a bounded reference upload; send bytes only to the returned signed URL without OAuth headers.",
       "inputSchema": {
@@ -2688,7 +2721,8 @@
         "destructiveHint": false,
         "idempotentHint": true,
         "openWorldHint": false,
-        "readOnlyHint": true
+        "readOnlyHint": true,
+        "title": "Read the My Assets library"
       },
       "description": "Inspect your Generator workspace without creating one.",
       "inputSchema": {
