@@ -12,7 +12,7 @@
       "name": "vixel",
       "source": "./plugins/vixel",
       "description": "Make films in your Vixel Works: Script, production plan, quoted image and video production, review and Remotion finishing.",
-      "version": "1.0.0-alpha.1",
+      "version": "1.0.0-alpha.2",
       "category": "creativity",
       "homepage": "https://drama.vixelai.com/creator/mcp"
     }
