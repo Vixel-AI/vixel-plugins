@@ -133,7 +133,9 @@ is free for individuals and companies with up to 3 employees and larger
 companies need a Remotion Company License, then run
 `npx --yes create-video@4.0.539 --yes --blank vixel-remotion` and
 `npx --yes skills@1.7.0 add remotion-dev/skills --yes`. Download each manifest
-asset from its `url` and compare its `sha256`; keep the Vixel watermark unless
+asset from its `url` with curl or Node `fetch` (the media host rejects Python's
+default urllib User-Agent; set one if you use Python) and compare its `sha256`;
+keep the Vixel watermark unless
 `cleanExportEntitled`. A Remotion render is a local file and publishes nothing.
 
 After review, `film_v1_release_upload_intent` and `film_v1_release_upload_finalize` upload and verify the final MP4; send storage bytes without account credentials. `film_v1_release_create` creates a prepared release; `film_v1_releases` reads it back. None of these tools posts to a social account or supplies audience observations.
