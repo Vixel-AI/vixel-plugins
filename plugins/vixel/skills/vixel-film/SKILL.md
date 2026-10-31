@@ -18,6 +18,9 @@ connect first (below).
   Keep the original request key; after a timeout, look up the original Job.
 - For titles, captions and motion graphics, follow the server's Remotion steps
   in this project folder and tell the creator Remotion's license terms first.
+  This Skill's `kit/` folder holds Vixel's finishing kit: download and check the
+  cut, review clips, check lines, build the edit, add music and render. Its
+  `kit/README.md` lists the commands.
 - Preparing a release is not publishing. Report the Work link and anything you
   could not verify.
 
