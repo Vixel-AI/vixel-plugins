@@ -1,6 +1,6 @@
 # Vixel for Claude Code
 
-Version `1.0.0-alpha.2` connects Claude Code to your Vixel account with browser
+Version `1.0.0-alpha.3` connects Claude Code to your Vixel account with browser
 sign-in. It adds the Vixel MCP server and a `vixel-film` Skill that follows
 Vixel's current method: draft and approve a Script, plan characters and shots,
 quote and produce each image or video inside a Work, review the cut and finish

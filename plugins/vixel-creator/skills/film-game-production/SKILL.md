@@ -81,8 +81,10 @@ is no raw prompt-to-media tool. Do not call Vixel's internal conversational Agen
 2. After the creator approves the Script, keep the `screenplayHash` returned by
    `film_v1_screenplay_get` as `approvedScreenplayHash`. Save the cast and
    creative beats with `film_v1_production_plan` on the current
-   `expectedRevisionId` and `expectedWriteVersion`. Vixel prepares prompts and
-   references on the server; do not write provider prompts.
+   `expectedRevisionId` and `expectedWriteVersion`. A beat may plan its `camera`
+   (shot size, angle and one motivated move); without it the Shot stays static.
+   Vixel prepares prompts and references on the server; do not write provider
+   prompts.
 3. Call `film_v1_production_quote` for one exact Element or Shot target, with a
    `direction` describing the desired result. Show `estimatedCredits`. A quote
    creates no Job or debit. A model appearing in the catalog is not proof it
