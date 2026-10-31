@@ -31,7 +31,7 @@ Start a new Codex task and approve access in the browser when asked.
 ## Any agent: the Skill only
 
 ```sh
-npx skills add Vixel-AI/vixel-plugins
+npx skills@1.7.0 add Vixel-AI/vixel-plugins
 ```
 
 This installs the `vixel-film` Skill for Claude Code, Codex, Cursor and other

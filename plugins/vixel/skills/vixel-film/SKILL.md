@@ -20,7 +20,8 @@ connect first (below).
   in this project folder and tell the creator Remotion's license terms first.
   This Skill's `kit/` folder holds Vixel's finishing kit: download and check the
   cut, review clips, check lines, build the edit, add music and render. Its
-  `kit/README.md` lists the commands.
+  `kit/README.md` lists the prerequisites (Node.js 22+, FFmpeg, git, optional
+  transcription) and the commands.
 - Preparing a release is not publishing. Report the Work link and anything you
   could not verify.
 

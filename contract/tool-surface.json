@@ -736,6 +736,14 @@
               "modelId": {
                 "maxLength": 200,
                 "type": "string"
+              },
+              "quality": {
+                "enum": [
+                  "low",
+                  "medium",
+                  "high"
+                ],
+                "type": "string"
               }
             },
             "type": "object"
@@ -748,6 +756,15 @@
           "quoteId": {
             "pattern": "^[a-f0-9]{64}$",
             "type": "string"
+          },
+          "referenceAssetIds": {
+            "items": {
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+              "type": "string"
+            },
+            "maxItems": 16,
+            "type": "array"
           },
           "repair": {
             "default": "none",
@@ -1052,7 +1069,7 @@
         "readOnlyHint": true,
         "title": "Quote production"
       },
-      "description": "Quote an image or video for an exact Element or Shot of the Work. This is how agents make media: Vixel prepares prompts and references from the approved Script and production plan. Your direction is this take's brief for performance, motion, camera, framing, look and sound; the exact scripted words, the first frame's identities and no on-screen text stay fixed. For a Shot video, videoDirection sets this take's camera and/or action, also for retakes after the plan is locked; an omitted half keeps the Shot's current one. No Job, crop, mutation or charge.",
+      "description": "Quote an image or video for an exact Element or Shot of the Work. This is how agents make media: Vixel prepares prompts and references from the approved Script and production plan. Your direction is this take's brief for performance, motion, camera, framing, look and sound; the exact scripted words, the first frame's identities and no on-screen text stay fixed. For a Shot video, videoDirection sets this take's camera and/or action, also for retakes after the plan is locked; an omitted half keeps the Shot's current one. An Element image can take referenceAssetIds: images uploaded to this Work, such as the creator's own illustration; say in direction who or what in them this Element is. Images are made at high quality unless options.quality asks for medium or low. No Job, crop, mutation or charge.",
       "inputSchema": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "additionalProperties": false,
@@ -1090,6 +1107,14 @@
               "modelId": {
                 "maxLength": 200,
                 "type": "string"
+              },
+              "quality": {
+                "enum": [
+                  "low",
+                  "medium",
+                  "high"
+                ],
+                "type": "string"
               }
             },
             "type": "object"
@@ -1098,6 +1123,15 @@
             "format": "uuid",
             "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
             "type": "string"
+          },
+          "referenceAssetIds": {
+            "items": {
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+              "type": "string"
+            },
+            "maxItems": 16,
+            "type": "array"
           },
           "repair": {
             "default": "none",
@@ -1361,7 +1395,7 @@
         "readOnlyHint": false,
         "title": "Finish a final video upload"
       },
-      "description": "Verify final MP4 bytes and save through the existing release artifact receipt owner.",
+      "description": "Verify final MP4 bytes and save through the existing release artifact receipt owner. Optional finishing records how the cut was finished: renderer, composition, the export manifestHash, the render check (duration, decode errors, loudness) and the edit decisions.",
       "inputSchema": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "additionalProperties": false,
@@ -1385,6 +1419,58 @@
             "maximum": 9007199254740991,
             "minimum": 0,
             "type": "integer"
+          },
+          "finishing": {
+            "additionalProperties": false,
+            "properties": {
+              "composition": {
+                "maxLength": 80,
+                "minLength": 1,
+                "type": "string"
+              },
+              "decodeErrors": {
+                "maximum": 9007199254740991,
+                "minimum": 0,
+                "type": "integer"
+              },
+              "durationMs": {
+                "exclusiveMinimum": 0,
+                "maximum": 9007199254740991,
+                "type": "integer"
+              },
+              "edit": {
+                "additionalProperties": {},
+                "propertyNames": {
+                  "type": "string"
+                },
+                "type": "object"
+              },
+              "loudness": {
+                "additionalProperties": {},
+                "properties": {
+                  "integratedLufs": {
+                    "type": "number"
+                  },
+                  "loudnessRangeLu": {
+                    "type": "number"
+                  },
+                  "truePeakDbtp": {
+                    "type": "number"
+                  }
+                },
+                "type": "object"
+              },
+              "manifestHash": {
+                "pattern": "^[a-f0-9]{64}$",
+                "type": "string"
+              },
+              "renderer": {
+                "maxLength": 80,
+                "minLength": 1,
+                "type": "string"
+              }
+            },
+            "type": "object"
           },
           "idempotencyKey": {
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{7,127}$",

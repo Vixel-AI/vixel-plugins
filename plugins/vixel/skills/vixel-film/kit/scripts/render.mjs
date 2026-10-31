@@ -62,6 +62,17 @@ export function parseLoudnormJson(stderr) {
   return JSON.parse(match[0]);
 }
 
+// AAC encoding can lift the true peak a few tenths above what loudnorm allowed. A peak more than toleranceDb over the target gets
+// one final gain trim of the excess plus marginDb (the meter rounds to 0.1 dB and the encoder varies a little), then is measured again.
+export const TRUE_PEAK = { toleranceDb: 0.05, marginDb: 0.1 };
+const centi = value => Math.round(value * 100) / 100;
+const peakExcess = (truePeakDbtp, target) => (Number.isFinite(truePeakDbtp) ? centi(truePeakDbtp - target) : 0);
+export const truePeakTrimDb = (truePeakDbtp, target = LOUDNESS.TP) => {
+  const excess = peakExcess(truePeakDbtp, target);
+  return excess > TRUE_PEAK.toleranceDb ? centi(excess + TRUE_PEAK.marginDb) : 0;
+};
+export const truePeakOk = (truePeakDbtp, target = LOUDNESS.TP) => peakExcess(truePeakDbtp, target) <= TRUE_PEAK.toleranceDb;
+
 export function parseEbur128(stderr) {
   const summary = stderr.slice(stderr.lastIndexOf('Summary:'));
   const num = re => { const m = summary.match(re); return m ? Number(m[1]) : null; };
@@ -124,20 +135,33 @@ export async function render({ project, composition = 'FilmVixel', out = null, s
     ...(concurrency ? [`--concurrency=${concurrency}`] : [])], 'render.log');
   else if (!fs.existsSync(video)) throw new KitError('VIDEO_MISSING', 'No rendered picture yet; run without --audio-only first.');
   const plan = mixPlan(edit, composition), seconds = edit.totals[composition] / edit.fps, mix = path.join(work, `${base}-${composition}.mix.wav`);
-  let loudness = { normalized: false };
+  const measure = async () => parseEbur128((await run('ffmpeg', ['-hide_banner', '-nostats', '-nostdin', '-i', output, '-map', '0:a:0', '-af', 'ebur128=peak=true', '-f', 'null', '-'])).stderr);
+  let loudness = { normalized: false }, meter;
   if (plan) {
     await ffmpeg(['-v', 'error', '-y', ...plan.inputs.flatMap(src => ['-i', path.join(paths.publicDir, src)]), '-filter_complex', plan.filter, '-map', '[mix]', '-t', seconds.toFixed(4), '-c:a', 'pcm_f32le', mix]);
     const measured = parseLoudnormJson((await run('ffmpeg', ['-hide_banner', '-nostdin', '-i', mix, '-af', `loudnorm=I=${LOUDNESS.I}:TP=${LOUDNESS.TP}:LRA=${LOUDNESS.LRA}:print_format=json`, '-f', 'null', '-'])).stderr);
     const audible = Number(measured.input_i) > -70;
     const filter = audible ? `loudnorm=I=${LOUDNESS.I}:TP=${LOUDNESS.TP}:LRA=${LOUDNESS.LRA}:measured_I=${measured.input_i}:measured_TP=${measured.input_tp}:measured_LRA=${measured.input_lra}:measured_thresh=${measured.input_thresh}:offset=${measured.target_offset}:linear=true:print_format=json` : 'anull';
-    const muxed = await ffmpeg(['-y', '-i', video, '-i', mix, '-map', '0:v:0', '-map', '1:a:0', '-c:v', 'copy', '-af', filter, '-ar', '48000', '-c:a', 'aac', '-b:a', '192k', '-t', seconds.toFixed(4), '-movflags', '+faststart', output]);
+    const mux = af => ffmpeg(['-y', '-i', video, '-i', mix, '-map', '0:v:0', '-map', '1:a:0', '-c:v', 'copy', '-af', af, '-ar', '48000', '-c:a', 'aac', '-b:a', '192k', '-t', seconds.toFixed(4), '-movflags', '+faststart', output]);
+    const muxed = await mux(filter);
     loudness = audible ? { normalized: true, mode: parseLoudnormJson(muxed.stderr).normalization_type, measuredInputLufs: Number(measured.input_i) } : { normalized: false, note: 'The mix is silent.' };
+    meter = await measure();
+    const trim = audible ? truePeakTrimDb(meter.truePeakDbtp) : 0;
+    if (trim) {
+      // One AAC encode from the same mix, with the trim after loudnorm; the first pass is kept for the record.
+      await mux(`${filter},volume=-${trim}dB`);
+      loudness = { ...loudness, firstPass: { integratedLufs: meter.integratedLufs, truePeakDbtp: meter.truePeakDbtp }, truePeakTrimDb: -trim };
+      meter = await measure();
+    }
   } else {
     await ffmpeg(['-v', 'error', '-y', '-i', video, '-f', 'lavfi', '-i', 'anullsrc=r=48000:cl=stereo', '-map', '0:v:0', '-map', '1:a:0', '-c:v', 'copy', '-c:a', 'aac', '-b:a', '192k', '-t', seconds.toFixed(4), '-movflags', '+faststart', output]);
     loudness = { normalized: false, note: 'Every clip is muted and there is no music; the film is silent.' };
+    meter = await measure();
   }
+  const peakOk = truePeakOk(meter.truePeakDbtp);
+  const loudnessWarning = peakOk ? null : `True peak ${meter.truePeakDbtp} dBTP is above the ${LOUDNESS.TP} dBTP target${loudness.truePeakTrimDb ? ` after a ${loudness.truePeakTrimDb} dB trim` : ''}; platforms may clip it. Lower clip or music volume in edit.json and render again.`;
+  loudness = { ...loudness, truePeakOk: peakOk, ...(loudnessWarning ? { warning: loudnessWarning } : {}) };
   const probe = await probeMedia(output), errors = await decodeErrors(output, 'video');
-  const meter = parseEbur128((await run('ffmpeg', ['-hide_banner', '-nostats', '-nostdin', '-i', output, '-map', '0:a:0', '-af', 'ebur128=peak=true', '-f', 'null', '-'])).stderr);
   const sheet = output.replace(/\.mp4$/i, '') + '-sheet.jpg';
   await ffmpeg(['-v', 'error', '-y', '-i', output, '-vf', `fps=24/${seconds.toFixed(3)},scale=320:-2,tile=6x4:padding=4:color=black`, '-frames:v', '1', '-q:v', '3', sheet]);
   const durationOk = probe.durationMs != null && Math.abs(probe.durationMs - seconds * 1000) <= 100;
@@ -146,7 +170,7 @@ export async function render({ project, composition = 'FilmVixel', out = null, s
     durationMs: probe.durationMs, durationOk, decodeErrors: errors, size: `${probe.width}x${probe.height}`, loudness: { target: LOUDNESS, ...loudness, ...meter }, sheet,
     remotionVersion: remotion.version, mutedVisuals: edit.segments.filter(s => s.visual != null && s.volume === 0).map(s => s.visual) };
   await writeFileAtomic(`${output}.qa.json`, JSON.stringify(qa, null, 2) + '\n');
-  return { ok: durationOk && !errors, ...qa, warning: remotion.warning,
+  return { ok: durationOk && !errors, ...qa, warning: [remotion.warning, loudnessWarning].filter(Boolean).join(' ') || null,
     next: 'Watch the whole file. Before preparing it as a release (only when the creator asks), read the export manifest again and confirm manifestHash is unchanged.' };
 }
 
