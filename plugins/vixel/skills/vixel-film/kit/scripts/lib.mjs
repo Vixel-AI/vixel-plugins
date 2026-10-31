@@ -91,16 +91,34 @@ export function userCacheDir(env = process.env, platform = process.platform, hom
   return path.join(env.XDG_CACHE_HOME || path.join(home, '.cache'), 'vixel-film-kit');
 }
 
+// Optional transcription runs from the kit's own virtual environment: `python3 -I` ignores user site-packages and
+// Homebrew/Debian Python refuse global pip installs, so a plain `pip install` cannot reach it. install-transcription.mjs fills it.
+export const FASTER_WHISPER = 'faster-whisper>=1.0,<2';
+export function transcriptionVenv(home = os.homedir(), platform = process.platform) {
+  const p = platform === 'win32' ? path.win32 : path.posix, dir = p.join(home, '.vixel', 'whisper');
+  return { dir, python: platform === 'win32' ? p.join(dir, 'Scripts', 'python.exe') : p.join(dir, 'bin', 'python') };
+}
+export const systemPythons = (platform = process.platform) => (platform === 'win32' ? ['python', 'py', 'python3'] : ['python3', 'python']);
+// --python wins outright; otherwise the kit venv, then the system Python.
+export const pythonCandidates = ({ python = null, home = os.homedir(), platform = process.platform } = {}) => (python ? [python] : [transcriptionVenv(home, platform).python, ...systemPythons(platform)]);
+
+// How to get a missing prerequisite on a fresh machine, printed with the error that needs it.
+const INSTALL_HINTS = {
+  ffmpeg: { darwin: 'brew install ffmpeg', win32: 'winget install Gyan.FFmpeg', linux: 'sudo apt install ffmpeg' },
+  python: { darwin: 'brew install python, the macOS installer from python.org, or xcode-select --install', win32: 'winget install Python.Python.3.12', linux: 'sudo apt install python3 python3-venv' },
+};
+export const installHint = (tool, platform = process.platform) => INSTALL_HINTS[tool][platform === 'win32' || platform === 'darwin' ? platform : 'linux'];
+
 // ------------------------------------------------------------------ processes
 
-export function run(binary, args, { timeout = 600000, cwd, maxBuffer = 64 * 1024 * 1024 } = {}) {
-  return new Promise(resolve => execFile(binary, args, { timeout, cwd, maxBuffer, windowsHide: true },
+export function run(binary, args, { timeout = 600000, cwd, maxBuffer = 64 * 1024 * 1024, env } = {}) {
+  return new Promise(resolve => execFile(binary, args, { timeout, cwd, maxBuffer, windowsHide: true, ...(env ? { env: { ...process.env, ...env } } : {}) },
     (error, stdout, stderr) => resolve({ code: error ? (typeof error.code === 'number' ? error.code : 1) : 0, stdout: String(stdout), stderr: String(stderr), error })));
 }
 
 export async function requireFfmpeg() {
   const [a, b] = await Promise.all([run('ffmpeg', ['-version'], { timeout: 15000 }), run('ffprobe', ['-version'], { timeout: 15000 })]);
-  if (a.code || b.code) throw new KitError('FFMPEG_REQUIRED', 'Install FFmpeg and FFprobe (on PATH), then run this again.', 3);
+  if (a.code || b.code) throw new KitError('FFMPEG_REQUIRED', `Install FFmpeg and FFprobe on PATH (for example ${installHint('ffmpeg')}), open a new terminal, then run this again.`, 3);
 }
 
 export async function ffmpeg(args, options) {

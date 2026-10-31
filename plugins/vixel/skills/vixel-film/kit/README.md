@@ -2,19 +2,49 @@
 
 Local tools for finishing an accepted Vixel cut with Remotion: download and
 verify the cut, review each clip, check the spoken lines, build the edit, add an
-optional music bed, mix, normalize loudness and render. Node.js 22+ and FFmpeg
-are required; Remotion runs from your `vixel-remotion` project. No dependency is
-installed by these scripts and none of them changes a Work, spends credits or
-posts anything.
+optional music bed, mix, normalize loudness and render. Remotion runs from your
+`vixel-remotion` project. Only `install-transcription.mjs` installs anything
+(into its own folder), and no script changes a Work, spends credits or posts
+anything.
 
-`KIT` below is this folder (`<vixel-film Skill folder>/kit`).
+`KIT` below is this folder (`<vixel-film Skill folder>/kit`):
+`.agents/skills/vixel-film/kit` after `vixel setup` or
+`npx -y skills@1.7.0 add Vixel-AI/vixel-plugins --skill vixel-film --yes`, and
+`~/.claude/plugins/marketplaces/vixel/plugins/vixel/skills/vixel-film/kit` with
+the Claude Code plugin.
+
+## Prerequisites
+
+Node.js 22+ with npm, FFmpeg with FFprobe, and git (the Skill installer and
+`claude plugin marketplace add` clone with it). Check with `node --version`,
+`ffmpeg -version` and `git --version`; the scripts stop with exit code 3 when
+FFmpeg or FFprobe is missing.
+
+| System | Install |
+| --- | --- |
+| macOS | `xcode-select --install`, then `brew install node ffmpeg`. Without Homebrew: the Node.js 22 LTS installer from nodejs.org, and Homebrew (brew.sh) for FFmpeg. |
+| Windows | `winget install OpenJS.NodeJS.LTS Gyan.FFmpeg Git.Git`, then open a new terminal. |
+| Debian/Ubuntu | `sudo apt install nodejs npm ffmpeg git`. If `node --version` is below 22, install Node.js 22 LTS from nodejs.org instead. |
+
+Optional transcription lets an agent, which cannot hear, check the spoken
+lines. `node KIT/scripts/install-transcription.mjs` creates a virtual
+environment at `~/.vixel/whisper` (Windows `%USERPROFILE%\.vixel\whisper`) and
+installs faster-whisper there: about 200 MB, no sudo, nothing else changed.
+It needs Python 3.9+ with venv (macOS `brew install python`, Windows
+`winget install Python.Python.3.12`, Debian/Ubuntu
+`sudo apt install python3 python3-venv`). The first transcription downloads
+the speech model (about 500 MB) into the kit cache. `--check` only reports;
+`--python <path>` picks the Python that builds the environment.
+
+## Steps
 
 | Step | Command |
 | --- | --- |
 | Add the template to the Remotion project (once) | `node KIT/scripts/install-template.mjs vixel-remotion` |
 | Save the export manifest JSON, then download and verify the cut | `node KIT/scripts/fetch-cut.mjs --manifest manifest.json --project vixel-remotion` |
 | Picture check: decode errors, lengths, contact sheets | `node KIT/scripts/review-clips.mjs --project vixel-remotion --beats plan.json` |
-| Word timestamps (needs faster-whisper; otherwise listen) | `node KIT/scripts/transcribe.mjs --project vixel-remotion --beats plan.json` |
+| Optional: install transcription (once per computer) | `node KIT/scripts/install-transcription.mjs` |
+| Word timestamps (needs transcription; otherwise listen) | `node KIT/scripts/transcribe.mjs --project vixel-remotion --beats plan.json` |
 | Compare planned lines with what was said | `node KIT/scripts/check-lines.mjs --project vixel-remotion --beats plan.json` |
 | Build `public/cut/edit.json` | `node KIT/scripts/make-edit.mjs --project vixel-remotion --beats plan.json` |
 | Layout stills | `node KIT/scripts/render.mjs --project vixel-remotion --stills` |
@@ -29,6 +59,13 @@ posts anything.
 - `check-lines` is advisory. It suggests a trim (`sourceStartMs`/`durationMs`),
   a local mute, or a retake with a repair category. Mute only in the local edit
   (`--mute 2` or an override); a Timeline mute blocks the export manifest.
+- `transcribe` uses `--python` if given, else the environment above, else
+  `python3`/`python` with faster-whisper. Without one it prints
+  `transcribed: false` and the install command: listen to every clip instead.
+- `render` normalizes to -14 LUFS and -1.5 dBTP. If AAC encoding leaves the true
+  peak above the target, it trims the gain once and measures again; the
+  `.qa.json` keeps both passes, and a peak still above the target is a
+  `warning`.
 - `review-clips` also measures the rhythm of each clip's main motion
   (`motion` in `review/clips.json`): `clear`, `bpm`, `strength` and `hitsMs`,
   the moments of each cycle's extreme (the bottom of a nod, a landing) counted
@@ -61,4 +98,5 @@ Preview while editing: `npx remotion studio src/vixel-film/index.ts` inside
   Vixel in films made with Vixel.
 - The music bed is synthesized by `scripts/music.mjs`; it uses no samples.
 - Remotion is licensed separately (remotion.pro/license). faster-whisper and its
-  model weights are optional and installed by you.
+  model weights are optional; `install-transcription.mjs` installs them only
+  when you run it.
