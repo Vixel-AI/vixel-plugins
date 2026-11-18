@@ -4,6 +4,8 @@ export type Segment = {
   id: string; from: number; frames: number; mood: string | null; card?: Card;
   visual?: number; shotKey?: string | null; src?: string; kind?: 'video' | 'image'; trimBefore?: number; hasAudio?: boolean;
   volume?: number; fadeIn?: boolean; fadeOut?: boolean; fit?: 'cover' | 'contain';
+  // A video's in and out points in its own time; a dissolve overlaps the picture before it by mix.fadeFrames and fades in over it.
+  inMs?: number; outMs?: number; dissolve?: boolean;
 };
 export type SubtitleWord = {text: string; space: boolean; from: number; to: number};
 export type SubtitleChunk = {from: number; to: number; style: 'line' | 'voice_over' | 'sung'; speaker: string | null; words: SubtitleWord[]};
@@ -20,6 +22,7 @@ export type Edit = {
   music: {src: string | null; kind: 'generated' | 'creator' | 'none'};
   mix: {fadeFrames: number; duckRampFrames: number; musicVolume: number; musicDuckVolume: number; musicFadeOutSeconds: number};
   totals: {Film: number; FilmVixel: number; cut: number};
+  edited?: boolean;
 };
 export type FilmProps = {branded: boolean; edit: Edit | null};
 

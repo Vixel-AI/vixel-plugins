@@ -1,6 +1,6 @@
 # Vixel Film for Codex
 
-Version `1.0.0-alpha.9` connects Codex to your Vixel account through
+Version `1.0.0-alpha.10` connects Codex to your Vixel account through
 MCP contract `film-v1` with browser OAuth. Make a film inside a Vixel Work:
 
 1. Draft the Script, save it and approve it.
@@ -32,5 +32,6 @@ exported from it. The skill is guidance, never an authorization boundary: the
 server owns scopes, owner isolation, revision checks, quotes, credit limits,
 idempotency and receipts. No token, provider key or user data belongs here.
 Production migrations/deployment and sign-in on your target platform are
-checked separately from this bundle. Audio generation, public posting and
-audience metrics are not available.
+checked separately from this bundle. Narration of approved voice-over lines is
+the only audio Vixel makes; music, sound effects, public posting and audience
+metrics are not available.

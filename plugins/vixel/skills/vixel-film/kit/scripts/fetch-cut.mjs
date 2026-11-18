@@ -58,6 +58,7 @@ export async function fetchCut({ manifest: raw, project, acceptIssues = false, t
     containsStills: manifest.containsStills === true, issues, acceptedIssues: issues.length > 0,
     visuals: manifest.visuals.map((clip, index) => ({ index, ...local(clip), shotId: shotIdFromKey(clip.key) })),
     audio: (manifest.audio || []).map((clip, index) => ({ index, ...local(clip) })),
+    speech: manifest.speech || [],
     assets: manifest.assets.map(asset => ({ id: asset.id, kind: asset.kind, sha256: asset.sha256, byteSize: asset.byteSize, file: `${CUT_DIR}/${files.get(asset.id)}` })),
   };
   await writeFileAtomic(paths.cutJson, JSON.stringify(cut, null, 2) + '\n');

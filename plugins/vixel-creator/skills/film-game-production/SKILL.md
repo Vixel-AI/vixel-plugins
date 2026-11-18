@@ -120,7 +120,7 @@ relevant Elements/Shots have current accepted bindings. A copied `candidate`
 does not satisfy that requirement. Use `film_v1_asset_review` for an explicitly authorized adoption; never silently promote status or treat an asset copy as a
 completed first look. Report the last completed checkpoint if blocked.
 
-Audio generation, hosted rendering, public publication and social distribution are outside this MCP version. Never publish through these preparation tools or route around missing capabilities using legacy/admin tools. Keep product text in English; do not expose credentials
+Narration is the only audio this MCP version makes: bind the speaker's Vixel voice with `film_v1_element_voice`, then quote each Shot that carries an approved `voice_over` line with `mediaKind` `audio` (one line per quote and approval). A finished line stays a candidate; after review, place it with `film_v1_timeline_patch` using the Job's `placeAs`. Each line has one voice: give a narrated line `voicedBy` `narration` in the production plan before making its Shot's video, so the video leaves it out and keeps its ambience; a video made with the line spoken goes stale once the narration is placed. Music, sound effects, hosted rendering, public publication and social distribution are outside this MCP version. Never publish through these preparation tools or route around missing capabilities using legacy/admin tools. Keep product text in English; do not expose credentials
 or private provider configuration. No extra connection discount is assumed.
 
 ## Accepted cut and prepared release

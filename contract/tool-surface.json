@@ -286,6 +286,179 @@
         "idempotentHint": true,
         "openWorldHint": true,
         "readOnlyHint": false,
+        "title": "Connect a channel"
+      },
+      "description": "Get a browser link to connect the creator's Instagram, YouTube or TikTok account. Give them the link; nothing is connected until they finish there.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false,
+        "properties": {
+          "platform": {
+            "enum": [
+              "instagram_reels",
+              "youtube_shorts",
+              "tiktok"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "platform"
+        ],
+        "type": "object"
+      },
+      "name": "film_v1_channel_connect",
+      "policy": {
+        "approval": "explicit user authorization",
+        "execution": "mutation",
+        "requiredScopes": [
+          "film.write"
+        ],
+        "requiresExpectedWorkVersion": false,
+        "requiresIdempotencyKey": false
+      }
+    },
+    {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false,
+        "readOnlyHint": true,
+        "title": "Read TikTok publishing options"
+      },
+      "description": "Read this exact TikTok account's current posting limits, privacy choices and interaction permissions before preparing a video. Ask the creator to choose the settings explicitly. Posts nothing.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false,
+        "properties": {
+          "connectionId": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{7,254}$",
+            "type": "string"
+          },
+          "platform": {
+            "const": "tiktok",
+            "type": "string"
+          }
+        },
+        "required": [
+          "platform",
+          "connectionId"
+        ],
+        "type": "object"
+      },
+      "name": "film_v1_channel_options",
+      "policy": {
+        "approval": "none",
+        "execution": "read",
+        "requiredScopes": [
+          "film.read"
+        ],
+        "requiresExpectedWorkVersion": false,
+        "requiresIdempotencyKey": false
+      }
+    },
+    {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false,
+        "readOnlyHint": true,
+        "title": "List connected channels"
+      },
+      "description": "List the creator-owned Instagram, YouTube and TikTok accounts connected to Vixel, with connectionId, status and posting capability. Posts nothing.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false,
+        "properties": {},
+        "type": "object"
+      },
+      "name": "film_v1_channels",
+      "policy": {
+        "approval": "none",
+        "execution": "read",
+        "requiredScopes": [
+          "film.read"
+        ],
+        "requiresExpectedWorkVersion": false,
+        "requiresIdempotencyKey": false
+      }
+    },
+    {
+      "annotations": {
+        "destructiveHint": true,
+        "idempotentHint": true,
+        "openWorldHint": true,
+        "readOnlyHint": false,
+        "title": "Bind a narration voice"
+      },
+      "description": "Bind the Vixel voice a character or voice Element speaks with in narration: Orus (deep, warm male), Leda (warm female), Charon (smooth, even male), Puck (lively, expressive), Aoede (bright, youthful female) or Kore (calm, gentle female). Its free-text voice and each take's direction shape delivery. Replaces the previous binding; no media or charge.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false,
+        "properties": {
+          "elementId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          },
+          "expectedRevisionId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          },
+          "expectedWriteVersion": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "idempotencyKey": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{7,127}$",
+            "type": "string"
+          },
+          "projectId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          },
+          "voiceName": {
+            "enum": [
+              "Orus",
+              "Leda",
+              "Charon",
+              "Puck",
+              "Aoede",
+              "Kore"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "projectId",
+          "expectedRevisionId",
+          "expectedWriteVersion",
+          "idempotencyKey",
+          "elementId",
+          "voiceName"
+        ],
+        "type": "object"
+      },
+      "name": "film_v1_element_voice",
+      "policy": {
+        "approval": "explicit user authorization",
+        "execution": "mutation",
+        "requiredScopes": [
+          "film.write"
+        ],
+        "requiresExpectedWorkVersion": true,
+        "requiresIdempotencyKey": true
+      }
+    },
+    {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true,
+        "readOnlyHint": false,
         "title": "Create the My Assets library"
       },
       "description": "Create or reuse your private Generator workspace for reference uploads.",
@@ -623,6 +796,269 @@
         "idempotentHint": true,
         "openWorldHint": true,
         "readOnlyHint": false,
+        "title": "Collect post metrics"
+      },
+      "description": "Collect the current platform metrics (views, likes, comments, shares and the like) for one published post, from its publish time to now or to windowEnd. Saves the reading with the post; does not change the Work.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false,
+        "properties": {
+          "idempotencyKey": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{7,127}$",
+            "type": "string"
+          },
+          "postId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          },
+          "projectId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          },
+          "windowEnd": {
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "projectId",
+          "postId",
+          "idempotencyKey"
+        ],
+        "type": "object"
+      },
+      "name": "film_v1_post_metrics",
+      "policy": {
+        "approval": "explicit user authorization",
+        "execution": "mutation",
+        "requiredScopes": [
+          "film.write"
+        ],
+        "requiresExpectedWorkVersion": false,
+        "requiresIdempotencyKey": true
+      }
+    },
+    {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true,
+        "readOnlyHint": false,
+        "title": "Prepare a post"
+      },
+      "description": "Prepare one post of a prepared release to one connected account. YouTube requires a title and visibility. TikTok requires channel_options first, explicit public visibility and every tiktokSettings choice including AI disclosure. Returns the exact preview and contentHash. Posts nothing: show the creator account, video, text and all settings, then call post_publish only after their approval.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false,
+        "properties": {
+          "caption": {
+            "maxLength": 2200,
+            "minLength": 1,
+            "type": "string"
+          },
+          "connectionId": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{7,254}$",
+            "type": "string"
+          },
+          "idempotencyKey": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{7,127}$",
+            "type": "string"
+          },
+          "platform": {
+            "enum": [
+              "instagram_reels",
+              "youtube_shorts",
+              "tiktok"
+            ],
+            "type": "string"
+          },
+          "projectId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          },
+          "releaseId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          },
+          "tiktokSettings": {
+            "additionalProperties": false,
+            "properties": {
+              "allowComment": {
+                "type": "boolean"
+              },
+              "allowDuet": {
+                "type": "boolean"
+              },
+              "allowStitch": {
+                "type": "boolean"
+              },
+              "commercialContentType": {
+                "enum": [
+                  "none",
+                  "brand_organic",
+                  "brand_content"
+                ],
+                "type": "string"
+              },
+              "isBrandOrganicPost": {
+                "const": true,
+                "type": "boolean"
+              },
+              "privacyLevel": {
+                "const": "PUBLIC_TO_EVERYONE",
+                "type": "string"
+              },
+              "videoMadeWithAi": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "privacyLevel",
+              "allowComment",
+              "allowDuet",
+              "allowStitch",
+              "commercialContentType",
+              "videoMadeWithAi"
+            ],
+            "type": "object"
+          },
+          "title": {
+            "maxLength": 100,
+            "minLength": 1,
+            "type": "string"
+          },
+          "visibility": {
+            "enum": [
+              "public",
+              "unlisted",
+              "private"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "projectId",
+          "releaseId",
+          "platform",
+          "connectionId",
+          "caption",
+          "idempotencyKey"
+        ],
+        "type": "object"
+      },
+      "name": "film_v1_post_prepare",
+      "policy": {
+        "approval": "explicit user authorization",
+        "execution": "mutation",
+        "requiredScopes": [
+          "film.write"
+        ],
+        "requiresExpectedWorkVersion": false,
+        "requiresIdempotencyKey": true
+      }
+    },
+    {
+      "annotations": {
+        "destructiveHint": true,
+        "idempotentHint": true,
+        "openWorldHint": true,
+        "readOnlyHint": false,
+        "title": "Publish a post"
+      },
+      "description": "Publish one prepared post to the creator's own account. A public action that cannot be taken back here: call it only after the creator said yes to this post's exact preview, and pass that preview's contentHash as approvedContentHash. A changed post needs a new preview and a new yes. A retry with the same key never posts twice.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false,
+        "properties": {
+          "approvedContentHash": {
+            "pattern": "^[a-f0-9]{64}$",
+            "type": "string"
+          },
+          "idempotencyKey": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{7,127}$",
+            "type": "string"
+          },
+          "postId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          },
+          "projectId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "projectId",
+          "postId",
+          "approvedContentHash",
+          "idempotencyKey"
+        ],
+        "type": "object"
+      },
+      "name": "film_v1_post_publish",
+      "policy": {
+        "approval": "explicit user authorization",
+        "execution": "mutation",
+        "requiredScopes": [
+          "film.write"
+        ],
+        "requiresExpectedWorkVersion": false,
+        "requiresIdempotencyKey": true
+      }
+    },
+    {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false,
+        "readOnlyHint": true,
+        "title": "Read post status"
+      },
+      "description": "List this Work's prepared and published posts. For an exact pending TikTok postId, query the same provider post and save its verified native receipt when ready. Never republishes. Keep polling the same postId while processing.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false,
+        "properties": {
+          "postId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          },
+          "projectId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "projectId"
+        ],
+        "type": "object"
+      },
+      "name": "film_v1_post_status",
+      "policy": {
+        "approval": "none",
+        "execution": "read",
+        "requiredScopes": [
+          "film.read"
+        ],
+        "requiresExpectedWorkVersion": false,
+        "requiresIdempotencyKey": false
+      }
+    },
+    {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true,
+        "readOnlyHint": false,
         "title": "Prepare an opening frame"
       },
       "description": "Prepare a reviewable opening-image candidate for a Shot. Does not adopt it, generate media or charge credits.",
@@ -689,7 +1125,7 @@
         "readOnlyHint": false,
         "title": "Start production"
       },
-      "description": "Start the exact approved production quote within the user's credit ceiling. May spend credits. Retry the original body/key; review results before adoption.",
+      "description": "Start the exact approved production quote within the user's credit ceiling. May spend credits. Retry the original body/key; review results before adoption. A narration line stays a candidate: after review, place it with timeline_patch using the Job's placeAs.",
       "inputSchema": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "additionalProperties": false,
@@ -701,6 +1137,11 @@
           "direction": {
             "default": "",
             "maxLength": 2000,
+            "type": "string"
+          },
+          "editAssetId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
             "type": "string"
           },
           "expectedRevisionId": {
@@ -725,7 +1166,8 @@
           "mediaKind": {
             "enum": [
               "image",
-              "video"
+              "video",
+              "audio"
             ],
             "type": "string"
           },
@@ -742,6 +1184,23 @@
                   "low",
                   "medium",
                   "high"
+                ],
+                "type": "string"
+              },
+              "referenceVideoAssetIds": {
+                "items": {
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+                  "type": "string"
+                },
+                "maxItems": 1,
+                "minItems": 1,
+                "type": "array"
+              },
+              "resolution": {
+                "enum": [
+                  "768P",
+                  "2K"
                 ],
                 "type": "string"
               }
@@ -811,9 +1270,19 @@
                 "maxLength": 800,
                 "minLength": 1,
                 "type": "string"
+              },
+              "sound": {
+                "maxLength": 700,
+                "minLength": 1,
+                "type": "string"
               }
             },
             "type": "object"
+          },
+          "videoPrompt": {
+            "maxLength": 7000,
+            "minLength": 1,
+            "type": "string"
           }
         },
         "required": [
@@ -849,7 +1318,7 @@
         "readOnlyHint": false,
         "title": "Save the production plan"
       },
-      "description": "Save creative beats and cast as a production plan for the explicitly approved Script and existing Story. Replaces the full plan; preserve unrelated content. No media or charge. A beat's optional camera plans its shot size, angle and one motivated move (e.g. slow push-in, tracking, low angle, whip-pan); without it the Shot keeps a static camera. Beats last 3-15 s in 0.5 s steps; video is generated as a source of at least 5 s, trimmed to the beat and quoted as at least 5 s. A character Element's optional voice (e.g. warm, gravelly baritone) shapes how it sounds in every video line.",
+      "description": "Save creative beats and cast as a production plan for the explicitly approved Script and existing Story. Replaces the full plan; preserve unrelated content. No media or charge. A beat's optional camera plans its shot size, angle and one motivated move (e.g. push-in, tracking, low angle, over-the-shoulder, whip-pan); change size, angle or vantage between neighbouring beats, and do not hold the camera still just because a character speaks. Make a big jump in size or vantage a cut between two beats rather than one large move, which the video model often under-plays. Without it the Shot keeps a static camera. Beats last 3-15 s in 0.5 s steps; video is generated as a source of at least 5 s, trimmed to the beat and quoted as at least 5 s. A character Element's optional voice (e.g. warm, gravelly baritone) shapes how it sounds in every video line. A never-on-screen narrator is a voice Element: it takes a voice too, and its lines use delivery voice_over. Each line has one voice: a voice_over line's voicedBy is video (default; the Shot video speaks it) or narration (a Vixel narration clip speaks it, and the Shot's video leaves it out and keeps only ambience and scene sound). On-screen and sung lines stay in video for lip sync. Choose narration before making the Shot's video; switching later outdates a video made the other way.",
       "inputSchema": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "additionalProperties": false,
@@ -900,6 +1369,13 @@
                         "maxLength": 500,
                         "minLength": 1,
                         "pattern": "^[^\\n\"“”]+$",
+                        "type": "string"
+                      },
+                      "voicedBy": {
+                        "enum": [
+                          "video",
+                          "narration"
+                        ],
                         "type": "string"
                       }
                     },
@@ -1069,7 +1545,7 @@
         "readOnlyHint": true,
         "title": "Quote production"
       },
-      "description": "Quote an image or video for an exact Element or Shot of the Work. This is how agents make media: Vixel prepares prompts and references from the approved Script and production plan. Your direction is this take's brief for performance, motion, camera, framing, look and sound; the exact scripted words, the first frame's identities and no on-screen text stay fixed. For a Shot video, videoDirection sets this take's camera and/or action, also for retakes after the plan is locked; an omitted half keeps the Shot's current one. An Element image can take referenceAssetIds: images uploaded to this Work, such as the creator's own illustration; say in direction who or what in them this Element is. Images are made at high quality unless options.quality asks for medium or low. No Job, crop, mutation or charge.",
+      "description": "Quote an image or video for an exact Element or Shot of the Work. This is how agents make media: Vixel prepares prompts and references from the approved Script and production plan. For a Shot video, write the whole take yourself in videoPrompt (up to 7,000 characters), also for retakes after the plan is locked: Vixel sends exactly your text to the video model (line breaks become single spaces, as in every Vixel video prompt) and adds no sentences of its own, while the opening frame, approved Script and price checks still apply; leave out direction, videoDirection and repair, and put the camera, action, approved line word for word and sound in the prompt. What works best on the video model, from its own prompt guide (a guide, not a rule): first the line `For the target video, at 0.00 seconds into the target video, <Picture 1> (from [Shot 1]) is fully referenced.`, a blank line, then `integrated_multimodal_description: [Shot 1] …` opening with the art style and the opening frame's subjects and composition, then the action in time order (a later cut as `[Shot 2] At 00:03.500, the camera cuts to …`; camera as motion type plus amplitude and speed, such as `pushes in with large amplitude at medium speed` or `tracks left beside her at walking speed`; each speaker named once with an ID like (S1) and their approved line word for word as <d>[Chinese] …</d>), then `overall_soundscape: …` (ambience, action and wordless sounds) and `non_diegetic_music: …` (N/A when none). Keep the timeline within the Shot's duration and prefer concrete sights and sounds over words like cinematic. Only a video quote without videoPrompt falls back to a take Vixel compiles from direction and the plan, with its own fixed sentences (the exact scripted words, the first frame's identities and no on-screen text); there videoDirection sets that take's camera, action and/or sound (ambience, effects and wordless vocal sounds), an omitted camera or action keeps the Shot's current one and an omitted sound keeps the planned sound. For an image, direction is this take's brief for pose, expression, camera, framing, look and lighting; the identities, the frame shape and no on-screen text stay fixed. An Element image can take referenceAssetIds: images uploaded to this Work, such as the creator's own illustration; say in direction who or what in them this Element is. A Shot opening image can take referenceAssetIds too: extra accepted images of this Work it must match, such as the creator's own model art; say in direction what each one is for. An image take without editAssetId redraws the target from its looks and plan, so it never sees an earlier image. To change one detail of an existing image (wrong scale, a drifted prop, style slips) and keep the rest of it, pass that image as editAssetId (the target's current image or an earlier take of it) and say only the change in direction; a Shot edit may add accepted Element looks as referenceAssetIds to match, such as a character sheet. Media comes in two tiers, Standard by default: an image at options.quality medium or high (HD), a video at options.resolution 768P or 2K (HD, sharper than 1080p, twice the price per second). The quote lists both tiers with their credits in tiers; offer HD when the creator asks for higher quality, 1080p or HD, and quote again with the chosen option before submitting. To remake existing footage (a reference video), cut one 1-15 s window of it (H.264 MP4, at most 32 MB), upload it to the Work (upload_intent with mimeType video/mp4 and durationMs, then upload_finalize) and pass its assetId as options.referenceVideoAssetIds on a Shot video: the take recreates that window's shots, camera, cuts and choreography, with the Shot's accepted looks (and its accepted opening image, if it has one, which then shows the cast in that setting) in place of the original subjects. It needs no opening image; say in direction who replaces whom and what changes. It costs more per second than an ordinary video; the quote shows both tiers. mediaKind audio makes a Shot's narration: its one planned voice_over line, word for word, in the speaker Element's voice bound with element_voice; direction (up to 200 characters) sets pace, emotion and emphasis. Placing a narration line makes narration its voice even if the plan says video: the Shot's videos then leave it out, and one made with the line spoken becomes outdated. No Job, crop, mutation or charge.",
       "inputSchema": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "additionalProperties": false,
@@ -1081,6 +1557,11 @@
           "direction": {
             "default": "",
             "maxLength": 2000,
+            "type": "string"
+          },
+          "editAssetId": {
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
             "type": "string"
           },
           "expectedRevisionId": {
@@ -1096,7 +1577,8 @@
           "mediaKind": {
             "enum": [
               "image",
-              "video"
+              "video",
+              "audio"
             ],
             "type": "string"
           },
@@ -1113,6 +1595,23 @@
                   "low",
                   "medium",
                   "high"
+                ],
+                "type": "string"
+              },
+              "referenceVideoAssetIds": {
+                "items": {
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+                  "type": "string"
+                },
+                "maxItems": 1,
+                "minItems": 1,
+                "type": "array"
+              },
+              "resolution": {
+                "enum": [
+                  "768P",
+                  "2K"
                 ],
                 "type": "string"
               }
@@ -1178,9 +1677,19 @@
                 "maxLength": 800,
                 "minLength": 1,
                 "type": "string"
+              },
+              "sound": {
+                "maxLength": 700,
+                "minLength": 1,
+                "type": "string"
               }
             },
             "type": "object"
+          },
+          "videoPrompt": {
+            "maxLength": 7000,
+            "minLength": 1,
+            "type": "string"
           }
         },
         "required": [

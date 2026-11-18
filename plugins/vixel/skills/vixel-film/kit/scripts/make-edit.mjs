@@ -72,19 +72,41 @@ export function buildEdit({ cut, shots, captionsByIndex = new Map(), options = {
   const brand = merge(DEFAULT_BRAND, { ...(options.brandCard === false ? { card: false } : {}), ...(overrides.brand || {}) });
   const colors = merge(DEFAULT_COLORS, overrides.colors || {});
   for (const [name, value] of Object.entries(colors)) if (!HEX.test(value)) throw new KitError('EDIT_INVALID', `colors.${name} must be a #RRGGBB colour.`);
-  const mute = new Set(options.mute || []), mood = MOODS.includes(options.mood) ? options.mood : 'play';
+  const mute = new Set(options.mute || []), mood = MOODS.includes(options.mood) ? options.mood : 'play', mix = { ...MIX, ...(overrides.mix || {}) };
   const segments = [];
   const titleFrames = title ? frames((overrides.title?.seconds ?? 2.5) * 1000) : 0;
   if (titleFrames) segments.push({ id: 'title', card: 'title', from: 0, frames: titleFrames, mood: overrides.title?.mood || null });
+  // The editor's decisions: a video's own in and out points (inMs/outMs, in its source's time) and a dissolve from the picture
+  // before it. Everything after a changed clip moves with it, so subtitles, ducking and narration stay with their pictures.
+  const used = new Map(), moved = new Map();
+  let shift = 0;
   for (const visual of cut.visuals) {
-    const from = titleFrames + frames(visual.startMs), to = titleFrames + frames(visual.startMs + visual.durationMs), per = overrides.visuals?.[visual.index] || {};
+    const per = overrides.visuals?.[visual.index] || {}, where = `visuals.${visual.index}`;
+    const planned = frames(visual.startMs + visual.durationMs) - frames(visual.startMs);
+    let window = visual, length = planned;
+    if (per.inMs !== undefined || per.outMs !== undefined) {
+      if (visual.kind !== 'video') throw new KitError('EDIT_INVALID', `${where}: inMs and outMs pick a video's in and out points; an image keeps its Timeline length.`);
+      const inMs = per.inMs ?? visual.sourceStartMs, outMs = per.outMs ?? visual.sourceStartMs + visual.durationMs, sourceMs = visual.probe?.durationMs;
+      if (![inMs, outMs].every(Number.isInteger) || inMs < 0 || outMs - inMs < 500 || (sourceMs != null && outMs > sourceMs))
+        throw new KitError('EDIT_INVALID', `${where}: inMs and outMs are whole milliseconds inside the clip (0-${sourceMs ?? '?'} ms), at least 500 ms apart.`);
+      window = { ...visual, sourceStartMs: inMs, durationMs: outMs - inMs }; length = frames(outMs - inMs);
+    }
+    const before = segments[segments.length - 1], lap = per.dissolve === true ? mix.fadeFrames : 0;
+    if (lap && (!before || lap >= before.frames || lap >= length)) throw new KitError('EDIT_INVALID', `${where}: a dissolve needs a picture before it, and both pictures longer than the fade (${mix.fadeFrames} frames).`);
+    shift -= lap;
+    const from = titleFrames + frames(visual.startMs) + shift;
+    shift += length - planned;
+    used.set(visual.index, window); moved.set(visual.index, from - titleFrames - frames(visual.startMs));
     const aspect = visual.probe?.width && visual.probe?.height ? visual.probe.width / visual.probe.height : width / height;
     segments.push({ id: `v${String(visual.index).padStart(2, '0')}`, visual: visual.index, shotKey: shots[visual.index]?.shotKey ?? null, src: visual.file, kind: visual.kind,
-      from, frames: to - from, trimBefore: frames(visual.sourceStartMs), hasAudio: visual.kind === 'video' && visual.probe?.hasAudio === true,
-      volume: mute.has(visual.index) ? 0 : per.volume ?? 1, fadeIn: per.fadeIn === true, fadeOut: per.fadeOut === true,
+      from, frames: length, trimBefore: frames(window.sourceStartMs), hasAudio: visual.kind === 'video' && visual.probe?.hasAudio === true,
+      inMs: visual.kind === 'video' ? window.sourceStartMs : undefined, outMs: visual.kind === 'video' ? window.sourceStartMs + window.durationMs : undefined, dissolve: lap ? true : undefined,
+      volume: mute.has(visual.index) ? 0 : per.volume ?? 1, fadeIn: per.fadeIn === true || lap > 0, fadeOut: per.fadeOut === true,
       fit: per.fit || (Math.abs(aspect - width / height) / (width / height) < 0.03 ? 'cover' : 'contain'), mood: MOODS.includes(per.mood) ? per.mood : null });
   }
-  const cutEnd = titleFrames + frames(cut.durationMs);
+  // A Timeline audio clip (a narration line) moves with the picture it starts under.
+  const audioShift = startMs => cut.visuals.reduce((s, v) => (v.startMs <= startMs ? moved.get(v.index) : s), 0);
+  const cutEnd = titleFrames + frames(cut.durationMs) + shift;
   let cursor = cutEnd;
   if (endLines.length) { const n = frames((overrides.endSeconds ?? 3.5) * 1000); segments.push({ id: 'end', card: 'end', from: cursor, frames: n, mood: overrides.endMood || null }); cursor += n; }
   const cleanFrames = cursor;
@@ -93,11 +115,13 @@ export function buildEdit({ cut, shots, captionsByIndex = new Map(), options = {
   for (const s of segments) if (!s.mood) s.mood = s.card === 'title' ? visualMoods[0] || mood : s.card ? visualMoods[visualMoods.length - 1] || mood : mood;
   const subtitles = [], speech = [], sources = new Set();
   for (const segment of segments.filter(s => s.visual != null && s.kind === 'video')) {
-    const visual = cut.visuals[segment.visual];
+    const visual = used.get(segment.visual);
     const result = segmentSubtitles({ segment, visual, beat: shots[visual.index]?.beat, captions: captionsByIndex.get(visual.index) || null, mode: options.subtitles || 'auto', portrait, fps });
     subtitles.push(...result.chunks); speech.push(...result.speech); if (result.source) sources.add(result.source);
   }
-  const audio = (cut.audio || []).map(clip => ({ src: clip.file, from: titleFrames + frames(clip.startMs), frames: frames(clip.startMs + clip.durationMs) - frames(clip.startMs), trimBefore: frames(clip.sourceStartMs), volume: clip.volume ?? 1 }));
+  // A narration clip on the dialogue track is speech too, so the music ducks under it.
+  for (const clip of cut.audio || []) if (clip.track === 'dialogue') { const at = titleFrames + frames(clip.startMs) + audioShift(clip.startMs); speech.push({ from: at, to: at + frames(clip.startMs + clip.durationMs) - frames(clip.startMs) }); }
+  const audio = (cut.audio || []).map(clip => ({ src: clip.file, from: titleFrames + frames(clip.startMs) + audioShift(clip.startMs), frames: frames(clip.startMs + clip.durationMs) - frames(clip.startMs), trimBefore: frames(clip.sourceStartMs), volume: clip.volume ?? 1 }));
   const sections = [];
   for (const s of segments) if (!sections.length || sections[sections.length - 1].mood !== s.mood) sections.push({ startSeconds: Math.round(ms(s.from, fps)) / 1000, mood: s.mood });
   return {
@@ -106,8 +130,10 @@ export function buildEdit({ cut, shots, captionsByIndex = new Map(), options = {
     colors, title: title ? { text: title, rows: overrides.title?.rows ?? titleRows(title, portrait), accent: overrides.title?.accent ?? [], still: 'cut/stills/title.jpg' } : null,
     endLines, endStill: 'cut/stills/end.jpg', brand, segments, audio, subtitles, subtitleSources: [...sources], speech: speech.sort((a, b) => a.from - b.from),
     music: { src: null, kind: 'none', sections, transpose: Number(overrides.music?.transpose ?? options.transpose ?? 0) || 0,
-      bpm: checkBpm(overrides.music?.bpm ?? options.bpm) }, mix: { ...MIX, ...(overrides.mix || {}) },
+      bpm: checkBpm(overrides.music?.bpm ?? options.bpm) }, mix,
     totals: { Film: cleanFrames, FilmVixel: cursor, cut: cutEnd - titleFrames },
+    // Whether the editor chose any clip's in/out points or a dissolve; render.mjs warns about a cut that is only the clips end to end.
+    edited: Object.values(overrides.visuals || {}).some(per => per && (per.inMs !== undefined || per.outMs !== undefined || per.dissolve === true)),
   };
 }
 
@@ -125,9 +151,9 @@ export async function makeEdit({ project, beats = [], work = null, shotKeys = nu
   const edit = buildEdit({ cut, shots, captionsByIndex, options });
   const stills = path.join(paths.cutDir, 'stills');
   await fsp.mkdir(stills, { recursive: true });
-  const first = cut.visuals[0], last = cut.visuals[cut.visuals.length - 1];
-  await still(path.join(paths.publicDir, first.file), first.kind, first.sourceStartMs + Math.min(500, first.durationMs / 2), edit.width, edit.height, path.join(stills, 'title.jpg'));
-  await still(path.join(paths.publicDir, last.file), last.kind, last.sourceStartMs + last.durationMs - 100, edit.width, edit.height, path.join(stills, 'end.jpg'));
+  const pictures = edit.segments.filter(s => s.visual != null), first = pictures[0], last = pictures[pictures.length - 1];
+  await still(path.join(paths.publicDir, first.src), first.kind, (first.inMs ?? 0) + Math.min(500, ((first.outMs ?? 0) - (first.inMs ?? 0)) / 2), edit.width, edit.height, path.join(stills, 'title.jpg'));
+  await still(path.join(paths.publicDir, last.src), last.kind, (last.outMs ?? 0) - 100, edit.width, edit.height, path.join(stills, 'end.jpg'));
   const music = options.music || 'auto';
   if (music === 'auto') {
     await writeBed(path.join(paths.cutDir, 'music.wav'), { sections: edit.music.sections, totalSeconds: edit.totals.FilmVixel / edit.fps, transpose: edit.music.transpose, bpm: edit.music.bpm });
@@ -142,7 +168,11 @@ export async function makeEdit({ project, beats = [], work = null, shotKeys = nu
   await writeFileAtomic(paths.editJson, JSON.stringify(edit, null, 2) + '\n');
   return { ok: true, edit: paths.editJson, seconds: { Film: edit.totals.Film / edit.fps, FilmVixel: edit.totals.FilmVixel / edit.fps }, subtitles: edit.subtitles.length,
     subtitleSources: edit.subtitleSources, music: edit.music.kind, cleanAvailable: edit.cleanExportEntitled,
-    next: 'Preview with `npx remotion studio src/vixel-film/index.ts` in the project, then run render.mjs --stills and render.mjs.' };
+    clips: pictures.map(s => ({ visual: s.visual, shotKey: s.shotKey, kind: s.kind, sourceMs: cut.visuals.find(v => v.index === s.visual)?.probe?.durationMs ?? null,
+      inMs: s.inMs ?? null, outMs: s.outMs ?? null, dissolve: s.dissolve === true })),
+    next: edit.edited
+      ? 'Watch the edit with `npx remotion studio src/vixel-film/index.ts` in the project, then run render.mjs --stills and render.mjs.'
+      : 'The clips are still joined end to end at their Timeline lengths. Watch them with `npx remotion studio src/vixel-film/index.ts` in the project, decide each clip\'s inMs/outMs and any dissolve in edit-overrides.json (visuals by index), and run make-edit again with --overrides before rendering.' };
 }
 
 if (isMain(import.meta)) runMain(async () => {

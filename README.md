@@ -68,7 +68,8 @@ npx skills@1.7.0 add Vixel-AI/vixel-plugins
 
 This installs the `vixel-film` Skill for Claude Code, Codex, Cursor and other
 agents the [skills](https://www.npmjs.com/package/skills) installer supports.
-The Skill explains how to connect Vixel when the tools are not set up yet.
+The Skill explains how to connect Vixel when the tools are not set up yet. Add
+`--skill vixel-animal-facts` for the animal-facts kit below.
 
 ## Other agents
 
@@ -102,6 +103,22 @@ so the dad winks at the camera.
 ```text
 Export the accepted cut and add a title card and subtitles with Remotion.
 ```
+
+## Animal-facts shorts
+
+The `vixel-animal-facts` Skill makes 30-second cartoon animal-facts shorts for
+a faceless facts channel. Vixel makes the characters, backgrounds and pose
+cutouts inside a Work, after you approve each quote; the Skill's kit animates
+them on your computer with captions, titles, music and sound effects. Paste
+this into your agent:
+
+```text
+Make me a 30-second cartoon animal-facts short with Vixel. If Vixel isn't connected yet, fetch and execute the appropriate instructions to set me up for Vixel from https://drama.vixelai.com/agent-setup.md. Then use the vixel-animal-facts Skill; if you don't have it, install it with `npx -y skills@1.7.0 add Vixel-AI/vixel-plugins --skill vixel-animal-facts --yes` (the Vixel plugin for Claude Code already includes it). Start by pitching me 3 animals with one surprising true fact each.
+```
+
+Your agent shows you the script, the shot plan and the credit estimate before
+it makes anything. The kit needs FFmpeg and Python 3.10 or later; your agent
+asks before installing its Python packages and voice model.
 
 ## Films made with agents
 
@@ -159,7 +176,8 @@ and any agent the `skills` installer supports can add the Skill.
 
 ## Contents
 
-- [`plugins/vixel`](./plugins/vixel) — Claude Code plugin.
+- [`plugins/vixel`](./plugins/vixel) — Claude Code plugin with the `vixel-film` and
+  `vixel-animal-facts` Skills.
 - [`plugins/vixel-creator`](./plugins/vixel-creator) — Codex plugin.
 - [`docs/MCP_TOOL_CONTRACT.md`](./docs/MCP_TOOL_CONTRACT.md) and
   [`contract/tool-surface.json`](./contract/tool-surface.json) — the tools and

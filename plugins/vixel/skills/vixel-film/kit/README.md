@@ -46,7 +46,8 @@ the speech model (about 500 MB) into the kit cache. `--check` only reports;
 | Optional: install transcription (once per computer) | `node KIT/scripts/install-transcription.mjs` |
 | Word timestamps (needs transcription; otherwise listen) | `node KIT/scripts/transcribe.mjs --project vixel-remotion --beats plan.json` |
 | Compare planned lines with what was said | `node KIT/scripts/check-lines.mjs --project vixel-remotion --beats plan.json` |
-| Build `public/cut/edit.json` | `node KIT/scripts/make-edit.mjs --project vixel-remotion --beats plan.json` |
+| Build the first assembly in `public/cut/edit.json` | `node KIT/scripts/make-edit.mjs --project vixel-remotion --beats plan.json` |
+| Edit: each clip's in/out points and joins, then rebuild | `node KIT/scripts/make-edit.mjs --project vixel-remotion --beats plan.json --overrides edit-overrides.json` |
 | Layout stills | `node KIT/scripts/render.mjs --project vixel-remotion --stills` |
 | Render, mix and check | `node KIT/scripts/render.mjs --project vixel-remotion` |
 
@@ -56,9 +57,15 @@ the speech model (about 500 MB) into the kit cache. `--check` only reports;
 - `plan.json` is the production plan body you saved (`beats[]` with `shotKey`
   and `dialogue`). Add `--work work.json` (the `film_v1_project` result) when the
   number of visuals differs from the number of beats.
-- `check-lines` is advisory. It suggests a trim (`sourceStartMs`/`durationMs`),
+- `check-lines` is advisory. It suggests a trim (`sourceStartMs`/`durationMs`,
+  which is `inMs` = `sourceStartMs` and `outMs` = `sourceStartMs + durationMs`
+  in the edit),
   a local mute, or a retake with a repair category. Mute only in the local edit
-  (`--mute 2` or an override); a Timeline mute blocks the export manifest.
+  (`--mute 2` or an override); a Timeline mute blocks the export manifest. A
+  narrated line (`voicedBy` `narration`, or a narration clip placed on the
+  Shot) is expected in its narration clip, not in the video.
+- `make-edit` ducks the music under heard clip speech and under narration clips
+  on the dialogue track.
 - `transcribe` uses `--python` if given, else the environment above, else
   `python3`/`python` with faster-whisper. Without one it prints
   `transcribed: false` and the install command: listen to every clip instead.
@@ -75,7 +82,27 @@ the speech model (about 500 MB) into the kit cache. `--check` only reports;
   rights to>`, `--mood play|tiptoe|lullaby|upbeat|tense|sad`, `--bpm 60-180`
   (generated bed, default 100), `--mute`, `--no-brand-card` and
   `--overrides edit-overrides.json` (colours, title rows and accent words,
-  per-visual `volume`, `fadeIn`, `fadeOut`, `mood`, `fit`).
+  per-visual `volume`, `fadeIn`, `fadeOut`, `mood`, `fit`, `inMs`, `outMs`,
+  `dissolve`).
+- The first `make-edit` lays the clips end to end at their Timeline lengths;
+  that is the raw assembly, not the film. Its `clips` list gives each visual's
+  index, source length (`sourceMs`) and window (`inMs`, `outMs`). In
+  `edit-overrides.json`, `visuals` keyed by that index take a video's own in
+  and out points (`inMs`, `outMs`, whole milliseconds of the clip's time, at
+  least 500 ms apart) and `dissolve: true`, which overlaps the clip with the
+  picture before it by `mix.fadeFrames` and fades it in. Everything after a
+  changed clip moves with it: later clips, subtitles, narration clips and the
+  music's ducking. An image keeps its Timeline length. `render` warns when every
+  clip still plays its whole Timeline window end to end and no in/out point or
+  dissolve was set.
+- A sound bridge (the next clip's sound heard before its picture, or a sound
+  running on under the next picture) is an extra `audio` entry in
+  `public/cut/edit.json` that plays the clip's own file: `src` and `trimBefore`
+  from its segment (minus the lead frames for a J-cut, plus the segment's
+  `frames` for an L-cut), `from` where it should start and `frames` how long.
+  Add a matching `speech` span when the bridge carries a voice, so the music
+  ducks under it. `make-edit` rewrites the file, so add bridges after its last
+  run.
 - Beat-cut: run `make-edit` with `--bpm` set to a clip's clear `motion.bpm`
   (or its double or half), then edit `segments[]` in `public/cut/edit.json`.
   One beat is `fps * 60 / bpm` frames. Give each segment a whole number of

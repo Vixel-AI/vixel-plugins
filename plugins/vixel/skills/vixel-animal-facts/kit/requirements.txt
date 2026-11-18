@@ -1,0 +1,7 @@
+# The kit's Python environment (see README.md). Tested with Python 3.12.
+pillow>=10.4
+numpy>=1.26
+scipy>=1.11
+soundfile>=0.12
+kokoro-onnx>=0.4,<1
+faster-whisper>=1.0,<2
