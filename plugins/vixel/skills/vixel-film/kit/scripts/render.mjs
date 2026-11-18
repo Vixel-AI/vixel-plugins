@@ -26,6 +26,16 @@ export function pickStillFrames(edit, composition) {
   return [...new Set(frames.filter(f => f >= 0 && f < total))].sort((a, b) => a - b);
 }
 
+// True when no edit was made: every picture plays its whole Timeline window, back to back, as generated.
+export function joinedEndToEnd(edit, cut) {
+  if (edit.edited || !cut.visuals?.length) return false;
+  const title = edit.segments.find(s => s.card === 'title')?.frames ?? 0, frames = ms => Math.round((ms * edit.fps) / 1000);
+  return cut.visuals.every(v => {
+    const s = edit.segments.find(seg => seg.visual === v.index);
+    return s && !s.dissolve && s.from === title + frames(v.startMs) && s.trimBefore === frames(v.sourceStartMs) && s.frames === frames(v.startMs + v.durationMs) - frames(v.startMs);
+  });
+}
+
 // FFmpeg inputs and filter graph for the final sound; null when nothing is audible.
 export function mixPlan(edit, composition) {
   const total = edit.totals[composition], fps = edit.fps, sec = frames => (frames / fps).toFixed(4);
@@ -33,7 +43,9 @@ export function mixPlan(edit, composition) {
   const format = 'aresample=48000,aformat=sample_fmts=fltp:channel_layouts=stereo';
   const place = (src, trimBefore, frames, from, volume, fades = '') => {
     const i = inputs.push(src) - 1;
-    chains.push(`[${i}:a]atrim=start=${sec(trimBefore)}:duration=${sec(frames)},asetpts=PTS-STARTPTS,${format},volume=${volume}${fades},adelay=delays=${Math.round((from * 1000) / fps)}:all=1[a${i}]`);
+    // Timestamps are recounted from samples after the delay: FFmpeg's adelay drops the delay of a clip trimmed from mid-source,
+    // which played that sound from the film's start.
+    chains.push(`[${i}:a]atrim=start=${sec(trimBefore)}:duration=${sec(frames)},asetpts=PTS-STARTPTS,${format},volume=${volume}${fades},adelay=delays=${Math.round((from * 1000) / fps)}:all=1,asetpts=N/SR/TB[a${i}]`);
     labels.push(`[a${i}]`);
   };
   const fade = (edit.mix.fadeFrames / fps).toFixed(4);
@@ -170,7 +182,8 @@ export async function render({ project, composition = 'FilmVixel', out = null, s
     durationMs: probe.durationMs, durationOk, decodeErrors: errors, size: `${probe.width}x${probe.height}`, loudness: { target: LOUDNESS, ...loudness, ...meter }, sheet,
     remotionVersion: remotion.version, mutedVisuals: edit.segments.filter(s => s.visual != null && s.volume === 0).map(s => s.visual) };
   await writeFileAtomic(`${output}.qa.json`, JSON.stringify(qa, null, 2) + '\n');
-  return { ok: durationOk && !errors, ...qa, warning: [remotion.warning, loudnessWarning].filter(Boolean).join(' ') || null,
+  const unedited = joinedEndToEnd(edit, cut) ? 'Every clip plays its whole Timeline window end to end: this is the raw assembly, not an edit. Choose each clip\'s inMs/outMs and any dissolve in edit-overrides.json, run make-edit with --overrides and render again before showing the film.' : null;
+  return { ok: durationOk && !errors, ...qa, warning: [remotion.warning, loudnessWarning, unedited].filter(Boolean).join(' ') || null,
     next: 'Watch the whole file. Before preparing it as a release (only when the creator asks), read the export manifest again and confirm manifestHash is unchanged.' };
 }
 

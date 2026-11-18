@@ -1,7 +1,7 @@
 {
   "name": "vixel",
-  "version": "1.0.0-alpha.4",
-  "description": "Make films in your Vixel Works from Claude Code: scripts, production plans, quoted image and video production, review, export and Remotion finishing, with browser sign-in.",
+  "version": "1.0.0-alpha.6",
+  "description": "Make films in your Vixel Works from Claude Code: scripts, production plans, quoted image and video production, review, export and Remotion finishing, plus a kit for cartoon animal-facts shorts, with browser sign-in.",
   "author": {
     "name": "Vixel AI",
     "url": "https://www.vixelai.com/"
@@ -9,5 +9,5 @@
   "homepage": "https://drama.vixelai.com/creator/mcp",
   "repository": "https://github.com/Vixel-AI/vixel-plugins",
   "license": "Proprietary",
-  "keywords": ["vixel", "film", "video", "storyboard", "remotion", "mcp"]
+  "keywords": ["vixel", "film", "video", "storyboard", "remotion", "mcp", "animal-facts"]
 }

@@ -9,13 +9,13 @@
       "offline_access"
     ],
     "serverName": "vixel-film",
-    "toolCount": 34,
-    "toolSchemaSha256": "8cdff36af175358d455dc00d6e61f9188712e88827067e2b7f0696359455baee"
+    "toolCount": 42,
+    "toolSchemaSha256": "ede498f56a17e145322f9565985fe1986813972ec96d9bac4cd79970644398c3"
   },
   "plugin": {
     "name": "vixel-creator",
     "releaseChannel": "developer-preview",
-    "version": "1.0.0-alpha.9"
+    "version": "1.0.0-alpha.10"
   },
   "schemaVersion": 1
 }

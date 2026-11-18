@@ -17,7 +17,11 @@ export async function checkLines({ project, beats, work = null, shotKeys = null 
     const shot = shots[visual.index], window = { startMs: visual.sourceStartMs, endMs: visual.sourceStartMs + visual.durationMs };
     const base = { index: visual.index, assetId: visual.assetId, shotKey: shot.shotKey, shotMatch: shot.how };
     if (!shot.beat) { lines.push({ ...base, status: 'unmapped', suggestion: { fix: 'map', note: 'Pass --work (film_v1_project JSON) or --shot-keys so this visual maps to its beat.' } }); continue; }
-    const planned = shot.beat.dialogue?.[0]?.text ?? null;
+    // A narrated line is voiced by its narration clip, not by the video, which should carry only scene sound.
+    const narrated = shot.beat.dialogue?.[0]?.voicedBy === 'narration' || (cut.audio || []).some(clip => clip.track === 'dialogue' && clip.shotId && clip.shotId === visual.shotId);
+    const beat = narrated ? { ...shot.beat, dialogue: [] } : shot.beat;
+    if (narrated) base.voicedBy = 'narration';
+    const planned = beat.dialogue?.[0]?.text ?? null;
     if (visual.kind !== 'video' || !visual.probe?.hasAudio) {
       lines.push({ ...base, expected: planned, status: visual.kind === 'video' ? 'no-audio' : 'still-image', suggestion: !planned ? { fix: 'none' }
         : visual.kind === 'video' ? { fix: 'retake', repair: 'speech' } : { fix: 'video', note: 'This beat is still a picture, so its planned line is not in the cut.' } });
@@ -26,7 +30,7 @@ export async function checkLines({ project, beats, work = null, shotKeys = null 
     const captions = await loadCaptions(paths, visual.index);
     if (captions === null) { lines.push({ ...base, expected: planned, status: 'not-transcribed', suggestion: { fix: 'listen' } }); continue; }
     transcribed++;
-    lines.push({ ...base, ...checkLine({ beat: shot.beat, heard: heardTokens(captions), window, mediaDurationMs: visual.probe?.durationMs ?? null }) });
+    lines.push({ ...base, ...checkLine({ beat, heard: heardTokens(captions), window, mediaDurationMs: visual.probe?.durationMs ?? null }) });
   }
   const out = { kind: 'vixel-line-check', scope: 'Local advisory comparison of planned lines and an automatic transcript; it can mishear. Listen before acting.',
     projectId: cut.projectId, revisionId: cut.revisionId, lines };
