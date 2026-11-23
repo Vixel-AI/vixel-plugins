@@ -69,7 +69,8 @@ npx skills@1.7.0 add Vixel-AI/vixel-plugins
 This installs the `vixel-film` Skill for Claude Code, Codex, Cursor and other
 agents the [skills](https://www.npmjs.com/package/skills) installer supports.
 The Skill explains how to connect Vixel when the tools are not set up yet. Add
-`--skill vixel-animal-facts` for the animal-facts kit below.
+`--skill vixel-animal-facts` for the animal-facts kit below, or
+`--skill vixel-trend-remake` for trend remakes starring your pet, your character or you.
 
 ## Other agents
 
@@ -119,6 +120,24 @@ Make me a 30-second cartoon animal-facts short with Vixel. If Vixel isn't connec
 Your agent shows you the script, the shot plan and the credit estimate before
 it makes anything. The kit needs FFmpeg and Python 3.10 or later; your agent
 asks before installing its Python packages and voice model.
+
+## Trend remakes
+
+The `vixel-trend-remake` Skill puts your pet, your own or an original
+character, or you into a trending reel from one reel link and one picture.
+Vixel picks the part to recreate and makes the remake on its servers after you
+confirm the credits; the Skill helps your agent choose a reel that works, check
+the result and post it with the trend's sound and credit to the original
+dancer. Paste this into your agent:
+
+```text
+Put my dog Nuomi into this reel with Vixel: <reel link>. Here is her photo: <photo link>. If Vixel isn't connected yet, fetch and execute the appropriate instructions to set me up for Vixel from https://drama.vixelai.com/agent-setup.md. Use the vixel-trend-remake Skill; if you don't have it, install it with `npx -y skills@1.7.0 add Vixel-AI/vixel-plugins --skill vixel-trend-remake --yes` (the Vixel plugin for Claude Code already includes it). Show me the credits before you make anything.
+```
+
+Use only reels you may use: your own, licensed, or allowed by their creator.
+Remakes star your pet, your own character or you (adults only, labeled as
+AI-generated); other real people, celebrities and characters someone else owns
+are not allowed.
 
 ## Films made with agents
 
@@ -176,8 +195,8 @@ and any agent the `skills` installer supports can add the Skill.
 
 ## Contents
 
-- [`plugins/vixel`](./plugins/vixel) — Claude Code plugin with the `vixel-film` and
-  `vixel-animal-facts` Skills.
+- [`plugins/vixel`](./plugins/vixel) — Claude Code plugin with the `vixel-film`,
+  `vixel-animal-facts` and `vixel-trend-remake` Skills.
 - [`plugins/vixel-creator`](./plugins/vixel-creator) — Codex plugin.
 - [`docs/MCP_TOOL_CONTRACT.md`](./docs/MCP_TOOL_CONTRACT.md) and
   [`contract/tool-surface.json`](./contract/tool-surface.json) — the tools and
