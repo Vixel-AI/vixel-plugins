@@ -1,7 +1,7 @@
 # Vixel for Claude Code
 
-Version `1.0.0-alpha.7` connects Claude Code to your Vixel account with browser
-sign-in. It adds the Vixel MCP server and three Skills:
+Version `1.0.0-alpha.8` connects Claude Code to your Vixel account with browser
+sign-in. It adds the Vixel MCP server and four Skills:
 
 - `vixel-film` follows Vixel's current method: draft and approve a Script, plan
   characters and shots, quote and produce each image or video inside a Work,
@@ -9,12 +9,18 @@ sign-in. It adds the Vixel MCP server and three Skills:
 - `vixel-animal-facts` makes 30-second cartoon animal-facts shorts: Vixel makes
   the characters, backgrounds and pose cutouts, and the Skill's kit animates
   them with captions, titles, music and sound effects on your computer.
+- `vixel-motion` (draft) makes short motion-graphics videos: explainers and
+  fact cards, kinetic type and number animations. Vixel makes the on-model
+  characters, cutouts and backgrounds, and the Skill animates them in HTML with
+  the open-source HyperFrames renderer on your computer.
 - `vixel-trend-remake` puts your pet, your own character or you into a
   trending reel from one reel link and one picture: Vixel picks the part to
   recreate and makes the remake after you confirm the credits; the Skill helps
   you choose a reel that works, review the result and post it with the trend's
-  sound and credit to the original dancer. Other real people, celebrities,
-  minors and characters someone else owns are not allowed.
+  sound and credit to the original dancer. With `ffmpeg` on your computer, it
+  also prepares the clip (one shot, burned-in text cleared) and checks the take
+  for traces of the original dancer. Other real people, celebrities, minors and
+  characters someone else owns are not allowed.
 
 ```text
 /plugin marketplace add Vixel-AI/vixel-plugins

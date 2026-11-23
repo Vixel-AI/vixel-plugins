@@ -3,15 +3,15 @@
     "files": [
       {
         "path": "contract/tool-surface.json",
-        "sha256": "4b2e76fd42d7d3187a1e9477b806c009ddb63b04d841588b9bbe271aeeac538e"
+        "sha256": "80be8ecdfa1ecf948354fae0b75c113ad5cb1bca913bef46435451429d9e7fa6"
       },
       {
         "path": "docs/MCP_TOOL_CONTRACT.md",
-        "sha256": "6457d00b6d6f703a616d46b80d3e95cee68ac65632a834532d507e71c7541c1e"
+        "sha256": "97157a72fbe0ef5910c9f689c38d998fe4768c97b978f46b6e4921e92fe3130a"
       },
       {
         "path": "plugins/vixel-creator/.codex-plugin/plugin.json",
-        "sha256": "f91e919f7a5df6f97f741b027d62c0971092084917f1c52fbb56bf1b5e58c0c7"
+        "sha256": "6589d87481e734d45560baf583cd11de8649242de939dae5bb3f6d460b883ccc"
       },
       {
         "path": "plugins/vixel-creator/.mcp.json",
@@ -19,7 +19,7 @@
       },
       {
         "path": "plugins/vixel-creator/README.md",
-        "sha256": "946211337a68f9ed841490787603d3cc033c6a734c636ab9e91571cd340720ba"
+        "sha256": "7cc84e182f9a10122f0e0d0fce629cd0a1792e63f475f1fa538b2ccaef92e933"
       },
       {
         "path": "plugins/vixel-creator/assets/icon.svg",
@@ -31,7 +31,7 @@
       },
       {
         "path": "plugins/vixel-creator/compatibility.json",
-        "sha256": "8728ba4d3410479b327241e815874500b178babaa0ed3defc42ffcfec4b379a0"
+        "sha256": "02ed1d89e15b9c69455c9a44919659f85313ef2cee1e8d7afdfffb2b9d75cd82"
       },
       {
         "path": "plugins/vixel-creator/skills/film-game-production/SKILL.md",
@@ -42,7 +42,7 @@
         "sha256": "120082742a0752e803eacdbdfdbe04f83a08f15263364799532eb1f3b47f1020"
       }
     ],
-    "sha256": "9c06603036ffe9e12bec583093bf739c418360c470563d615f65e8c128521a62"
+    "sha256": "a0db965648435985c9b04a22d93084e5f9ae7b0aef3661f472ea4b3fb80cff2c"
   },
   "distribution": {
     "generatedPluginPath": "plugins/vixel-creator",
@@ -52,17 +52,17 @@
   "mcp": {
     "contractVersion": "film-v1",
     "toolCount": 46,
-    "toolSchemaSha256": "4b2e76fd42d7d3187a1e9477b806c009ddb63b04d841588b9bbe271aeeac538e"
+    "toolSchemaSha256": "80be8ecdfa1ecf948354fae0b75c113ad5cb1bca913bef46435451429d9e7fa6"
   },
   "plugin": {
     "name": "vixel-creator",
-    "version": "1.0.0-alpha.11"
+    "version": "1.0.0-alpha.12"
   },
   "schemaVersion": 1,
   "source": {
     "canonicalPluginPath": "plugins/vixel-creator",
     "repository": "https://github.com/Vixel-AI/vixel-ai-interactive-drama",
-    "revision": "8584b3118cad3e025431de0ebeca95bd5fe787d4",
+    "revision": "0ebbbd103c0405ee6756d9c39d914d639bc95de2",
     "treeState": "clean"
   }
 }

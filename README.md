@@ -128,7 +128,10 @@ character, or you into a trending reel from one reel link and one picture.
 Vixel picks the part to recreate and makes the remake on its servers after you
 confirm the credits; the Skill helps your agent choose a reel that works, check
 the result and post it with the trend's sound and credit to the original
-dancer. Paste this into your agent:
+dancer. An agent with a terminal and `ffmpeg` also prepares the clip itself
+(one continuous shot, burned-in text cleared) and checks the take before you
+see it; MCP clients get the same guide as the `remake_trend` prompt. Paste this
+into your agent:
 
 ```text
 Put my dog Nuomi into this reel with Vixel: <reel link>. Here is her photo: <photo link>. If Vixel isn't connected yet, fetch and execute the appropriate instructions to set me up for Vixel from https://drama.vixelai.com/agent-setup.md. Use the vixel-trend-remake Skill; if you don't have it, install it with `npx -y skills@1.7.0 add Vixel-AI/vixel-plugins --skill vixel-trend-remake --yes` (the Vixel plugin for Claude Code already includes it). Show me the credits before you make anything.

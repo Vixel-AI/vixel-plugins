@@ -1,0 +1,28 @@
+{
+  "files": [
+    {
+      "name": "pose_shocked.png",
+      "from": "Shot 'Why is this dad pregnant' opening image: mediaContract.originalOutput",
+      "url": "https://media.example/replace-with-the-job-asset-original-url.png",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "pose_proud.png",
+      "from": "Shot 'Dads carry the babies' opening image: mediaContract.originalOutput",
+      "url": "https://media.example/replace-with-the-job-asset-original-url.png",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "bg_reef.png",
+      "from": "Location 'Sunny coral reef' look: publicUrl",
+      "url": "https://media.example/replace-with-the-job-asset-public-url.png",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "bg_kelp.png",
+      "from": "Location 'Cozy kelp home' look: publicUrl",
+      "url": "https://media.example/replace-with-the-job-asset-public-url.png",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  ]
+}

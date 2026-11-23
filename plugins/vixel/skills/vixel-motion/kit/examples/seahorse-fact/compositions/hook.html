@@ -1,0 +1,117 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "Nunito Black";
+      src: url("assets/fonts/Nunito-Black.ttf");
+      font-weight: 900;
+    }
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      font-family: "Nunito Black";
+    }
+    #hook-stage {
+      position: absolute;
+      inset: -6%;
+    }
+    #hook-plate {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    #hook-burst {
+      position: absolute;
+      left: 190px;
+      top: 950px;
+      width: 700px;
+      height: 700px;
+    }
+    #hook-dad {
+      position: absolute;
+      left: 275px;
+      top: 700px;
+      width: 530px;
+    }
+    #hook-kicker {
+      position: absolute;
+      left: 120px;
+      top: 310px;
+      width: 768px;
+      font-size: 50px;
+      color: var(--accent);
+      paint-order: stroke fill;
+      -webkit-text-stroke: 10px var(--ink);
+    }
+    #hook-title {
+      position: absolute;
+      left: 120px;
+      top: 380px;
+      width: 768px;
+      font-size: 116px;
+      line-height: 1.02;
+      color: var(--paper);
+      paint-order: stroke fill;
+      -webkit-text-stroke: 16px var(--ink);
+    }
+    #hook-title span {
+      display: inline-block;
+    }
+    #hook-title .hook-hot {
+      color: var(--accent);
+    }
+    #hook-flood {
+      position: absolute;
+      inset: 0;
+      background: var(--accent);
+    }
+  </style>
+  <div id="root" data-composition-id="hook" data-width="1080" data-height="1920">
+    <div id="hook-stage" data-layout-allow-overflow><img id="hook-plate" src="assets/bg_reef.jpg" alt="" /></div>
+    <svg id="hook-burst" viewBox="-100 -100 200 200" aria-hidden="true">
+      <polygon
+        fill="#ffd23f"
+        stroke="#2b1a0e"
+        stroke-width="4"
+        stroke-linejoin="round"
+        points="0,-96 16,-42 62,-74 40,-24 94,-20 46,6 82,46 30,34 26,92 0,44 -26,92 -30,34 -82,46 -46,6 -94,-20 -40,-24 -62,-74 -16,-42"
+      />
+    </svg>
+    <img id="hook-dad" data-layout-allow-overflow src="assets/dad_shocked.png" alt="" />
+    <div id="hook-kicker">Seahorse fact</div>
+    <h1 id="hook-title">
+      <span id="hook-w1">This</span> <span id="hook-w2">dad</span> <span id="hook-w3">is</span>
+      <span id="hook-w4" class="hook-hot">pregnant.</span>
+    </h1>
+    <div id="hook-flood"></div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    // The world behind: one slow push across the scene.
+    tl.fromTo("#hook-stage", { scale: 1 }, { scale: 1.06, duration: 4, ease: "power1.inOut" }, 0);
+    // Title: on screen in the first third of a second (frame 0 is the thumbnail); the payoff word lands bigger.
+    tl.fromTo("#hook-kicker", { opacity: 0, filter: "blur(8px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.18, ease: "power4.out" }, 0);
+    ["#hook-w1", "#hook-w2", "#hook-w3"].forEach((id, i) => {
+      tl.fromTo(id, { opacity: 0, filter: "blur(6px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.13, ease: "power4.out" }, 0.08 + i * 0.067);
+    });
+    tl.fromTo("#hook-w4", { opacity: 0, scale: 1.5, filter: "blur(10px)" },
+      { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.32, ease: "back.out(2)", transformOrigin: "0% 60%" }, 0.32);
+    // The character arrives with a playful spring, then lands with a squash.
+    tl.fromTo("#hook-dad", { y: 1000 }, { y: 0, duration: 0.85, ease: "elastic.out(1, 0.55)" }, 0.45);
+    tl.fromTo("#hook-dad", { scaleX: 1.1, scaleY: 0.9 }, { scaleX: 1, scaleY: 1, duration: 0.3, ease: "back.out(3)", transformOrigin: "50% 100%" }, 0.95);
+    tl.fromTo("#hook-burst", { scale: 0, rotation: -20 }, { scale: 1, rotation: 0, duration: 0.35, ease: "back.out(1.6)" }, 1.0);
+    // A second fromTo on the same element must not render its start at authoring time.
+    tl.fromTo("#hook-burst", { rotation: 0 }, { rotation: 24, duration: 2.65, ease: "none", immediateRender: false }, 1.35);
+    // The shock: a short shake, fixed keyframes so every render matches.
+    tl.to("#hook-dad", { keyframes: { x: [0, -16, 14, -10, 8, 0] }, duration: 0.32, ease: "none" }, 2.1);
+    // Exit: the words leave, then the belly floods the frame and becomes the next scene's card.
+    tl.to(["#hook-kicker", "#hook-w1", "#hook-w2", "#hook-w3", "#hook-w4"],
+      { opacity: 0, filter: "blur(8px)", duration: 0.15, stagger: 0.03, ease: "power2.in" }, 3.35);
+    tl.fromTo("#hook-flood", { clipPath: "circle(0px at 540px 1330px)" },
+      { clipPath: "circle(2300px at 540px 1330px)", duration: 0.4, ease: "power3.in" }, 3.6);
+    window.__timelines["hook"] = tl;
+  </script>
+</template>

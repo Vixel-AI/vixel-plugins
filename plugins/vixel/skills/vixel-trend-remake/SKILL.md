@@ -73,6 +73,65 @@ For the picture: one clear picture of the subject on its own, face visible,
 ideally the whole body, in good light. Several subjects in one picture confuse
 the result.
 
+## With a computer: prepare the clip, then check the take
+
+If you can run commands (Claude Code, Codex, an agent with its own computer),
+prepare the clip yourself and check the take afterwards: remakes come out
+cleaner. Without a computer, skip this section and pass the reel link. You need
+`ffmpeg` and `ffprobe`; ask before installing anything.
+
+1. **Get the file.** Use the video file you already have, or download it, for
+   example `yt-dlp -o reel.mp4 "<reel link>"`. When `film_v1_remake_quote` was
+   given a page link, its `clip.videoUrl` is the file Vixel used; the link
+   expires within hours, so fetch it right away to work on the same file.
+2. **Find the cuts.** Make frame grids at 4 frames a second (32 frames, 8 s,
+   per image) and look at every one:
+   `ffmpeg -i reel.mp4 -vf "fps=4,scale=180:-1,tile=8x4" grid-%02d.jpg`
+   List likely scene changes, then look at the frames around each:
+   `ffmpeg -i reel.mp4 -vf "select='gt(scene,0.3)',showinfo" -f null - 2>&1 | grep -o "pts_time:[0-9.]*"`
+   The scores miss jump cuts, so trust the grids. Pick a window of 5-15 s
+   (8-12 s is best) inside one continuous shot, starting and ending on a calm
+   moment, a whole number of seconds long.
+3. **Clear burned-in text** (captions, stickers, usernames, watermarks). The
+   video model redraws any text it sees, and blur boxes too. From sampled
+   frames, list a tight box `X,Y,W,H` in source pixels for each piece of text
+   and the seconds `A`-`B` it shows. Chain one block per box:
+   - text that moves or changes: fill the box from the frames around it with a
+     temporal median (`radius` is the frame rate):
+     `[v]split[a][b];[b]crop=W:H:X:Y,tmedian=radius=30[m];[a][m]overlay=X:Y:enable='between(t,A,B)'[v2]`
+   - text that never moves: soften the box instead:
+     `[v]split[a][b];[b]crop=W:H:X:Y,scale=3:3:flags=area,scale=W:H:flags=bicubic[m];[a][m]overlay=X:Y[v2]`
+
+   Never cover a full-width band: a gesture under a mask is lost. Look at the
+   frames again afterwards.
+4. **Cut and encode** the window frame-accurately as H.264. Times are in the
+   source; `[v2]` is your last block's output (start the chain from `[0:v]`):
+   `ffmpeg -i reel.mp4 -filter_complex "<blocks>" -map "[v2]" -map "0:a?" -ss START -to END -c:v libx264 -crf 18 -pix_fmt yuv420p -c:a aac -b:a 192k -movflags +faststart clip.mp4`
+   With no text to clear, use `-map 0:v` and no `-filter_complex`.
+5. **Upload it.** `film_v1_ensure_workspace`, then `film_v1_upload_intent` with
+   `mimeType` `video/mp4`, the file's `byteSize`, `sha256` and `durationMs`
+   (`ffprobe -v error -show_entries format=duration -of csv=p=0 clip.mp4`),
+   PUT the bytes to the returned link with its headers, and
+   `film_v1_upload_finalize`. Then quote with `clipAssetId` instead of
+   `reelUrl`, and no `window`.
+6. **Check the take** when `film_v1_remake` is done. Download
+   `result.videoUrl` as `take.mp4` and compare the middle of every frame with
+   your clip, ten times a second:
+   `ffmpeg -i take.mp4 -i clip.mp4 -lavfi "[0:v]scale=270:480,fps=10,crop=150:300:60:110,format=gray[a];[1:v]scale=270:480,fps=10,crop=150:300:60:110,format=gray[b];[a][b]ssim=stats_file=ssim.log" -f null -`
+   (for a landscape clip use `scale=480:270` and `crop=300:150:90:60`).
+   Average the `All:` values per second. Clean remakes score about
+   0.43-0.51; a take that copies the original clip scores 0.60-0.88. Flag any
+   second at 0.60 or more, or any second 0.3 or more above the first. The
+   numbers cannot catch everything (a subject's head on the dancer's body
+   scored 0.52-0.58), so always look at frames every 0.5 s through the first
+   3 s and at every arms-up moment:
+   `ffmpeg -t 3 -i take.mp4 -vf "fps=2,scale=270:-1,tile=6x1" -frames:v 1 first-3s.jpg`
+   If the original dancer, a human body part where there should be none, or
+   the original's text shows, offer `film_v1_remake_redo`; it costs credits,
+   so ask the creator first.
+7. **Longer reels.** One remake covers one shot of up to 15 s. For a longer
+   reel, or one with several shots, prepare the best single shot.
+
 ## 2. Quote, confirm, make
 
 1. `film_v1_remake_quote` with `reelUrl` (or `clipAssetId`), `photoUrl` (or
