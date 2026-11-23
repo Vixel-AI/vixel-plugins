@@ -56,8 +56,9 @@ Two models download on first use, each only with the creator's OK:
 | Silent render and sound cues | `PY KIT/scripts/render.py plan.json --out out/video.mp4` |
 | Music, effects, mix and mux | `PY KIT/scripts/sound.py out/video.sound.json --voice audio/vo.wav --video out/video.mp4 --out out/final.mp4` |
 
-- `prep.py look` splits on fully transparent columns; name every view it finds,
-  left to right, and use `_` for the ones you do not need. A sheet or frame
+- `prep.py look` splits on fully transparent rows, then columns, so a sheet can
+  be one row or a grid; name every view it finds left to right, row by row, and
+  use `_` for the ones you do not need. A sheet or frame
   whose border is opaque gets its flat background keyed out first
   (`--key auto|always|never`). `cutout --names a,b,...` renames the outputs.
 - `prep.py plate` crops to the frame plus a 12% margin (`--margin 1.12`) so the

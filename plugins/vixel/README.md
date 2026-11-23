@@ -9,7 +9,7 @@ sign-in. It adds the Vixel MCP server and four Skills:
 - `vixel-animal-facts` makes 30-second cartoon animal-facts shorts: Vixel makes
   the characters, backgrounds and pose cutouts, and the Skill's kit animates
   them with captions, titles, music and sound effects on your computer.
-- `vixel-motion` (draft) makes short motion-graphics videos: explainers and
+- `vixel-motion` makes short motion-graphics videos: explainers and
   fact cards, kinetic type and number animations. Vixel makes the on-model
   characters, cutouts and backgrounds, and the Skill animates them in HTML with
   the open-source HyperFrames renderer on your computer.

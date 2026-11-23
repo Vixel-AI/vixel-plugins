@@ -67,7 +67,7 @@ Use three to five kinds in a film, each caused by something on screen:
 
 | Transition | How |
 | --- | --- |
-| Object becomes the world | a shape on screen (the belly, a card) grows past the frame in 0.35-0.65 s and its colour is the next scene's ground, which shrinks into the next card |
+| Object becomes the world | a shape on screen (the belly, a card, a heart) grows past the frame in 0.35-0.65 s and its colour is the next scene's ground, which shrinks into the next card; cover the last 3-4 frames with a flat layer of that colour (a heart's notch never closes) and start the next scene on the same flat colour, drawing any outline in after |
 | Colour flood | the hero stays while the ground changes colour in about 0.4 s, `power2.inOut` |
 | Whip | a 0.13-0.3 s horizontal smear; the arriving element lands blurred and sharpens in 0.13 s |
 | Iris | `clip-path: circle()` opens from a point that matters in about 0.15-0.4 s |
@@ -80,11 +80,16 @@ At most a third of the seams between scenes are plain cuts.
 - Every word stays between 288 and 1248 px down and 120 and 888 px across; the
   apps draw their own interface outside it. Characters and plates may extend
   past it and past the frame.
-- Frame 0 is the thumbnail: the hook line or the result is on screen within
-  the first third of a second. Never black, never a logo.
+- Frame 0 is the thumbnail: the kicker or the hook line is already on frame 0,
+  with no entrance (`check` warns `first_frame_empty`), and the rest of the
+  line lands within the first third of a second. Never black, never a logo.
 - Nothing meant to be read under 28 px; titles at 4-9% of the frame height
   (about 80-170 px), with a dark outline over busy plates
-  (`paint-order: stroke fill; -webkit-text-stroke`).
+  (`paint-order: stroke fill; -webkit-text-stroke`). A saturated accent on a
+  dark plate can still fail contrast (`contrast_aa_failure`): keep big numbers
+  in the paper colour and put the accent on the graphic beside them.
+- A character entering from off frame starts far enough out that no part of it
+  shows before its entrance, especially on the frame of a cut.
 - One subject, centred, stacked vertically; landscape layouts are rebuilt as a
   vertical sequence, never squeezed.
 

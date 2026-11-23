@@ -142,8 +142,8 @@ title and sound in the shot plan starts on a word: `w12`, or `w12+0.3`.
 
 ## 5. Cutouts, plates and anchors
 
-Look at each character sheet, then name its views left to right (`_` skips a
-view):
+Look at each character sheet, then name its views left to right, row by row
+when the sheet is a grid (`_` skips a view):
 
 ```
 PY KIT/scripts/prep.py look src/look_dad.png --out cut --views _,dad_front,dad_side,_

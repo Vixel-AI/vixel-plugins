@@ -93,7 +93,7 @@
     // The world behind: one slow push across the scene.
     tl.fromTo("#hook-stage", { scale: 1 }, { scale: 1.06, duration: 4, ease: "power1.inOut" }, 0);
     // Title: on screen in the first third of a second (frame 0 is the thumbnail); the payoff word lands bigger.
-    tl.fromTo("#hook-kicker", { opacity: 0, filter: "blur(8px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.18, ease: "power4.out" }, 0);
+    // The kicker is already on frame 0, the thumbnail; the words follow within a third of a second.
     ["#hook-w1", "#hook-w2", "#hook-w3"].forEach((id, i) => {
       tl.fromTo(id, { opacity: 0, filter: "blur(6px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.13, ease: "power4.out" }, 0.08 + i * 0.067);
     });

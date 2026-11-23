@@ -62,7 +62,7 @@
   "source": {
     "canonicalPluginPath": "plugins/vixel-creator",
     "repository": "https://github.com/Vixel-AI/vixel-ai-interactive-drama",
-    "revision": "0ebbbd103c0405ee6756d9c39d914d639bc95de2",
+    "revision": "aa3fe99f3b3337a9ca88aa8b7185675e5821629c",
     "treeState": "clean"
   }
 }

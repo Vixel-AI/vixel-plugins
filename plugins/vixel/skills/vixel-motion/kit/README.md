@@ -68,8 +68,9 @@ python3 -m venv ~/.vixel/motion
   fails or differs.
 - `prep.py` writes into an existing folder: create `assets/` first. A picture
   on a flat colour is keyed out by flooding from the border; one that is
-  already transparent is only cropped. `look` splits on transparent columns:
-  name every view it finds, left to right, `_` to skip one.
+  already transparent is only cropped. `look` splits on transparent rows, then
+  columns, so a sheet can be one row or a grid (a 9:16 Work returns tall sheets,
+  often 2x2): name every view it finds left to right, row by row, `_` to skip one.
 - The first `tts` and `transcribe` runs download their models; ask first.
   `--engine whisper` keeps transcription on this computer.
 

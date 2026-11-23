@@ -23,7 +23,8 @@ command and the composition rules; `KIT/examples/seahorse-fact/` is a finished
 `KIT/references/breakdown.md` the shot-by-shot breakdown of a reference video.
 `HF` is `npx -y hyperframes@0.9.26`, always pinned to this version, with
 `HYPERFRAMES_NO_TELEMETRY=1` set in the environment of every HyperFrames
-command. `PY` is the Python of the kit's environment (`KIT/README.md`).
+command (in a shell: `export HYPERFRAMES_NO_TELEMETRY=1` and
+`HF() { npx -y hyperframes@0.9.26 "$@"; }`). `PY` is the Python of the kit's environment (`KIT/README.md`).
 Work in one folder per video: `STORYBOARD.md`, `media.json`, `src/`, the
 HyperFrames project (`index.html`, `compositions/`, `assets/`) and `out/`.
 
@@ -87,16 +88,25 @@ creator's approval of the storyboard and the estimate.
    on-screen text. Show it, wait for approval and keep the `screenplayHash`
    from `film_v1_screenplay_get` as `approvedScreenplayHash`.
 3. `film_v1_story_save`: each scene's `durationMs` must equal the sum of its
-   beats' `durationMs` (beats are 3-15 s in 0.5 s steps).
+   beats' `durationMs` (beats are 3-15 s in 0.5 s steps); a scene that needs
+   only pictures has `requiresVideo` false.
 4. `film_v1_production_plan`: one beat per line; characters described with one
    sentence that tells them apart, then the same style words every time;
    locations as empty scenes in those style words, with "no characters, no
-   text"; a narrator only if the video is narrated.
+   text"; a narrator only if the video is narrated (a silent video has empty
+   `dialogue`). Bind only the character Elements to a Shot whose opening image
+   is a pose plate, never its location, so the plate stays empty.
 5. Quote every picture first and show the total; submit each approved quote
    and follow its Job with `film_v1_job`. Make character looks first and check
-   them, since poses copy their identity. Directions that cut out cleanly:
+   them, since poses copy their identity. Each picture that lands is adopted
+   into the Work and moves its write version: read the current one
+   (`film_v1_screenplay_get`) before the next quotes. The quote is the price;
+   the Job's `actualCredits` is what was charged. Directions that cut out
+   cleanly:
    - **Character look** (Element image): every view on a plain pure white
-     background, fully separate, with generous white space between views.
+     background, fully separate, with generous white space between views. In a
+     9:16 Work the sheet comes back tall, often as a 2x2 grid; `prep.py look`
+     reads it row by row.
    - **Background plate** (location look): "One single tall vertical 9:16
      portrait illustration filling the whole frame, not a sheet or grid. Empty
      scene, no characters, no text. Keep the middle and lower middle open."
@@ -104,7 +114,8 @@ creator's approval of the storyboard and the estimate.
      plate for a motion-graphics edit, not a scene. <who or what> alone on a
      flat plain pure white background: no scenery, no ground, no shadow. Full
      body, centred, about 70% of the frame height, nothing touching the frame
-     edges. <the pose>. Same style as their character sheet."
+     edges. <the pose>. Same style as their character sheet." Poses usually
+     come back already cut out.
 6. Write `media.json` with one entry per accepted picture: `name` (for example
    `pose_shocked.png`), `url` and `sha256`. Looks and plates use the Job
    asset's `publicUrl` and `sha256`; a pose uses the uncropped original,
@@ -127,8 +138,10 @@ margin for pushes and shakes. Look at every cutout before you use it.
 
 ## 4. Build the HyperFrames project
 
-Copy `KIT/examples/seahorse-fact/` (or run `HF init <dir> --skip-skills
---resolution portrait --non-interactive`) and follow `KIT/README.md`
+Copy the example's project files, not its storyboard or media list:
+`cp -R KIT/examples/seahorse-fact/index.html KIT/examples/seahorse-fact/compositions .`
+(or run `HF init <dir> --skip-skills --resolution portrait --non-interactive`).
+Then rewrite the scenes for your storyboard and follow `KIT/README.md`
 "Composition rules". In short: `index.html` mounts one scene per file in
 `compositions/`; a scene's host, its root and its timeline key share one id;
 every scene builds one paused GSAP timeline from `fromTo` tweens; nothing reads
@@ -170,8 +183,8 @@ HF render --quality looks -o out/final.mp4
 ```
 
 Fix every `check` error and weigh every warning (`line_unread`,
-`outside_safe_zone`, `first_frame_empty`, a repeated `fromTo` without
-`immediateRender: false`). Open the three `--review` sheets: describe each beat
+`outside_safe_zone`, `first_frame_empty`, `contrast_aa_failure`, a repeated
+`fromTo` without `immediateRender: false`). Open the three `--review` sheets: describe each beat
 frame in one sentence as a stranger would, then fix what is unreadable, covered,
 off-frame, static for more than 3 s or not what the storyboard says. Show the
 creator the beat sheet before the delivery render. After rendering, confirm
@@ -193,7 +206,7 @@ the creator's pet, their character or the creator themselves goes through
 ## 8. Report
 
 Give the creator the MP4, the contact sheet and the beat sheet, the Work link
-(`film_v1_handoff`), the credits the Jobs actually charged, the sources of
+(`film_v1_handoff`), the credits the Jobs actually charged (`actualCredits`), the sources of
 every fact, and anything you could not verify (sound is measured, not heard).
 Save the final video to the Work as a prepared release
 (`film_v1_release_upload_intent`, `film_v1_release_upload_finalize`,
