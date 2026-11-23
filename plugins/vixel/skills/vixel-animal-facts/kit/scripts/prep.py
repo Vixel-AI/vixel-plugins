@@ -1,7 +1,7 @@
 # Turn downloaded Vixel pictures into render inputs: character-sheet views and pose frames become cropped
 # RGBA cutouts, backgrounds become cover-fit plates, and anchors.json records points other layers aim at.
 #
-#   prep.py look SHEET.png --out cut --views dad_closeup,dad_front,dad_side,dad_back   (_ skips a view)
+#   prep.py look SHEET.png --out cut --views dad_closeup,dad_front,dad_side,dad_back   (_ skips a view; a grid reads row by row)
 #   prep.py cutout FRAME.png ... --out cut [--names pose_b01,...]
 #   prep.py plate BG.png ... --out cut [--size 1080x1920] [--margin 1.12]
 #   prep.py anchors cut [--region belly=235-255,205-240,160-215 ...]
@@ -45,24 +45,35 @@ def load(path, key):
         im = key_background(im)
     return im
 
-def split_views(im, min_width=60):
-    """Split a horizontal character sheet into views on fully transparent columns."""
-    a = np.array(im)[:, :, 3]
-    occupied = (a > 8).sum(axis=0) > 0
-    views, start = [], None
-    for x, occ in enumerate(np.append(occupied, False)):
-        if occ and start is None: start = x
+def spans(occupied, min_size):
+    """Runs of occupied rows or columns longer than min_size, as (start, end) pairs."""
+    out, start = [], None
+    for i, occ in enumerate(np.append(occupied, False)):
+        if occ and start is None: start = i
         if not occ and start is not None:
-            if x - start > min_width: views.append((start, x))
+            if i - start > min_size: out.append((start, i))
             start = None
-    return [crop_alpha(im.crop((x0, 0, x1, im.height))) for x0, x1 in views]
+    return out
+
+def split_views(im, min_width=60):
+    """Split a character sheet into views on fully transparent rows, then columns: a single row or a grid,
+    read left to right, top to bottom."""
+    a = np.array(im)[:, :, 3] > 8
+    rows = spans(a.any(axis=1), min_width)
+    views = []
+    for i, (y0, y1) in enumerate(rows):
+        # Each row of views reaches halfway into the empty gaps around it, so a single row keeps the full height.
+        top = 0 if i == 0 else (rows[i - 1][1] + y0) // 2
+        bottom = im.height if i == len(rows) - 1 else (y1 + rows[i + 1][0]) // 2
+        views += [crop_alpha(im.crop((x0, top, x1, bottom))) for x0, x1 in spans(a[y0:y1].any(axis=0), min_width)]
+    return views
 
 def cmd_look(args):
     names = args.views.split(",")
     views = split_views(load(args.sheet, args.key))
     print(f"{os.path.basename(args.sheet)}: {len(views)} views", [v.size for v in views])
     if len(views) != len(names):
-        raise SystemExit(f"found {len(views)} views but --views names {len(names)}; look at the sheet and name each view left to right (_ to skip)")
+        raise SystemExit(f"found {len(views)} views but --views names {len(names)}; look at the sheet and name each view left to right, top to bottom (_ to skip)")
     for name, v in zip(names, views):
         if name != "_": v.save(os.path.join(args.out, f"{name}.png")); print(" ", f"{name}.png", v.size)
 
@@ -125,8 +136,8 @@ def cmd_anchors(args):
 def main():
     ap = argparse.ArgumentParser(description="Prepare Vixel pictures for render.py.")
     sub = ap.add_subparsers(dest="cmd", required=True)
-    p = sub.add_parser("look", help="split a character sheet into named views")
-    p.add_argument("sheet"); p.add_argument("--views", required=True, help="one name per view, left to right; _ skips one")
+    p = sub.add_parser("look", help="split a character sheet (one row or a grid) into named views")
+    p.add_argument("sheet"); p.add_argument("--views", required=True, help="one name per view, left to right, top to bottom; _ skips one")
     p = sub.add_parser("cutout", help="crop pose frames to their opaque pixels")
     p.add_argument("frames", nargs="+"); p.add_argument("--names", help="output names, one per frame")
     for name in ("look", "cutout"):

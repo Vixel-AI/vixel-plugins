@@ -1,0 +1,4 @@
+# The kit's Python environment for prep.py (see README.md). Tested with Python 3.12.
+pillow>=10.4
+numpy>=1.26
+scipy>=1.11

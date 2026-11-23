@@ -69,8 +69,9 @@ npx skills@1.7.0 add Vixel-AI/vixel-plugins
 This installs the `vixel-film` Skill for Claude Code, Codex, Cursor and other
 agents the [skills](https://www.npmjs.com/package/skills) installer supports.
 The Skill explains how to connect Vixel when the tools are not set up yet. Add
-`--skill vixel-animal-facts` for the animal-facts kit below, or
-`--skill vixel-trend-remake` for trend remakes starring your pet, your character or you.
+`--skill vixel-animal-facts` for the animal-facts kit below, `--skill vixel-motion`
+for motion-graphics videos, or `--skill vixel-trend-remake` for trend remakes
+starring your pet, your character or you.
 
 ## Other agents
 
@@ -121,6 +122,22 @@ Your agent shows you the script, the shot plan and the credit estimate before
 it makes anything. The kit needs FFmpeg and Python 3.10 or later; your agent
 asks before installing its Python packages and voice model.
 
+## Motion videos
+
+The `vixel-motion` Skill makes short motion-graphics videos: explainers and
+fact cards, kinetic type, and number or chart animations. Vixel makes the
+on-model characters, cutouts and backgrounds inside a Work, after you approve
+each quote; your agent animates them in HTML with the open-source HyperFrames
+renderer and renders the MP4 on your computer, with every word and number drawn
+exactly. Paste this into your agent:
+
+```text
+Make me a 15-second vertical fact video with Vixel: an octopus has three hearts. If Vixel isn't connected yet, fetch and execute the appropriate instructions to set me up for Vixel from https://drama.vixelai.com/agent-setup.md. Then use the vixel-motion Skill; if you don't have it, install it with `npx -y skills@1.7.0 add Vixel-AI/vixel-plugins --skill vixel-motion --yes` (the Vixel plugin for Claude Code already includes it). Show me the storyboard and the credits before you make anything.
+```
+
+The kit needs Node.js 22 or later, FFmpeg and Python 3.10 or later; your agent
+asks before installing the renderer and its Python packages.
+
 ## Trend remakes
 
 The `vixel-trend-remake` Skill puts your pet, your own or an original
@@ -128,7 +145,10 @@ character, or you into a trending reel from one reel link and one picture.
 Vixel picks the part to recreate and makes the remake on its servers after you
 confirm the credits; the Skill helps your agent choose a reel that works, check
 the result and post it with the trend's sound and credit to the original
-dancer. Paste this into your agent:
+dancer. An agent with a terminal and `ffmpeg` also prepares the clip itself
+(one continuous shot, burned-in text cleared) and checks the take before you
+see it; MCP clients get the same guide as the `remake_trend` prompt. Paste this
+into your agent:
 
 ```text
 Put my dog Nuomi into this reel with Vixel: <reel link>. Here is her photo: <photo link>. If Vixel isn't connected yet, fetch and execute the appropriate instructions to set me up for Vixel from https://drama.vixelai.com/agent-setup.md. Use the vixel-trend-remake Skill; if you don't have it, install it with `npx -y skills@1.7.0 add Vixel-AI/vixel-plugins --skill vixel-trend-remake --yes` (the Vixel plugin for Claude Code already includes it). Show me the credits before you make anything.
@@ -196,7 +216,7 @@ and any agent the `skills` installer supports can add the Skill.
 ## Contents
 
 - [`plugins/vixel`](./plugins/vixel) — Claude Code plugin with the `vixel-film`,
-  `vixel-animal-facts` and `vixel-trend-remake` Skills.
+  `vixel-animal-facts`, `vixel-motion` and `vixel-trend-remake` Skills.
 - [`plugins/vixel-creator`](./plugins/vixel-creator) — Codex plugin.
 - [`docs/MCP_TOOL_CONTRACT.md`](./docs/MCP_TOOL_CONTRACT.md) and
   [`contract/tool-surface.json`](./contract/tool-surface.json) — the tools and

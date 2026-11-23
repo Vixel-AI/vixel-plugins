@@ -1,0 +1,152 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "Nunito Black";
+      src: url("assets/fonts/Nunito-Black.ttf");
+      font-weight: 900;
+    }
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      font-family: "Nunito Black";
+    }
+    #count-stage {
+      position: absolute;
+      inset: -6%;
+    }
+    #count-plate {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    #count-card {
+      position: absolute;
+      inset: 0;
+      background: var(--accent);
+    }
+    #count-upto {
+      position: absolute;
+      left: 120px;
+      top: 330px;
+      width: 840px;
+      text-align: center;
+      font-size: 56px;
+      color: var(--ink);
+    }
+    #count-number {
+      position: absolute;
+      left: 120px;
+      top: 390px;
+      width: 840px;
+      text-align: center;
+      font-size: 236px;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+      color: var(--paper);
+      paint-order: stroke fill;
+      -webkit-text-stroke: 18px var(--ink);
+    }
+    #count-label {
+      position: absolute;
+      left: 120px;
+      top: 680px;
+      width: 840px;
+      text-align: center;
+      font-size: 64px;
+      color: var(--ink);
+    }
+    #count-eggs {
+      position: absolute;
+      left: 238px;
+      top: 850px;
+      width: 604px;
+      display: grid;
+      grid-template-columns: repeat(10, 46px);
+      gap: 16px;
+    }
+    #count-eggs i {
+      display: block;
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #ffe2a8 0 18%, #ff9a3c 19% 100%);
+      border: 5px solid var(--ink);
+    }
+    #count-unit {
+      position: absolute;
+      left: 120px;
+      top: 1168px;
+      width: 840px;
+      text-align: center;
+      font-size: 38px;
+      color: var(--paper);
+      paint-order: stroke fill;
+      -webkit-text-stroke: 8px var(--ink);
+    }
+    #count-tag {
+      position: absolute;
+      left: 120px;
+      top: 1218px;
+      width: 768px;
+      text-align: center;
+      font-size: 28px;
+      color: var(--paper);
+      paint-order: stroke fill;
+      -webkit-text-stroke: 6px var(--ink);
+    }
+    #count-dad {
+      position: absolute;
+      left: 330px;
+      top: 1330px;
+      width: 420px;
+    }
+  </style>
+  <div id="root" data-composition-id="count" data-width="1080" data-height="1920">
+    <div id="count-stage" data-layout-allow-overflow><img id="count-plate" src="assets/bg_kelp.jpg" alt="" /></div>
+    <div id="count-card"></div>
+    <div id="count-upto">Dad gives birth to up to</div>
+    <div id="count-number">2,000</div>
+    <div id="count-label">babies at once</div>
+    <div id="count-eggs">
+      <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+      <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+      <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+      <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+      <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+    </div>
+    <div id="count-unit">1 egg = 40 babies</div>
+    <div id="count-tag">made with Vixel</div>
+    <img id="count-dad" data-layout-allow-overflow src="assets/dad_proud.png" alt="" />
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    // The world pulls back slowly while the card holds the number.
+    tl.fromTo("#count-stage", { scale: 1.05 }, { scale: 1, duration: 4, ease: "power1.inOut" }, 0);
+    // The previous scene's flood shrinks into the card: the belly becomes the number's frame.
+    tl.fromTo("#count-card", { clipPath: "inset(0px 0px 0px 0px round 0px)" },
+      { clipPath: "inset(300px 80px 1100px 80px round 56px)", duration: 0.5, ease: "power3.out" }, 0);
+    tl.fromTo("#count-upto", { opacity: 0, filter: "blur(8px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.18, ease: "power4.out" }, 0.4);
+    // The count is a pure function of time: a proxy tween writes the digits on every seek.
+    const counter = { value: 0 };
+    const number = document.querySelector("#count-number");
+    const show = () => { number.textContent = Math.round(counter.value).toLocaleString("en-US"); };
+    tl.fromTo(counter, { value: 0 }, { value: 2000, duration: 1.4, ease: "power2.out", onUpdate: show }, 0.5);
+    tl.fromTo("#count-number", { opacity: 0 }, { opacity: 1, duration: 0.12, ease: "none" }, 0.5);
+    // The landing is a hit: an instant set, then a settle.
+    tl.set("#count-number", { scale: 1.1 }, 1.9);
+    tl.to("#count-number", { scale: 1, duration: 0.35, ease: "back.out(3)" }, 1.9);
+    tl.fromTo("#count-label", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.3, ease: "expo.out" }, 1.95);
+    // One egg per 40 babies fills in step with the count.
+    tl.fromTo("#count-eggs i", { scale: 0 }, { scale: 1, duration: 0.25, ease: "back.out(2.2)", stagger: 0.026 }, 0.55);
+    tl.fromTo("#count-unit", { opacity: 0 }, { opacity: 1, duration: 0.2, ease: "none" }, 1.7);
+    tl.fromTo("#count-dad", { x: 700, rotation: 12 }, { x: 0, rotation: 0, duration: 0.8, ease: "elastic.out(1, 0.6)" }, 0.9);
+    tl.fromTo("#count-dad", { scaleX: 1.08, scaleY: 0.92 }, { scaleX: 1, scaleY: 1, duration: 0.3, ease: "back.out(3)", transformOrigin: "50% 100%" }, 1.9);
+    // Keep the small end tag unless the export is entitled to a clean one.
+    tl.fromTo("#count-tag", { opacity: 0 }, { opacity: 1, duration: 0.2, ease: "none" }, 1.7);
+    window.__timelines["count"] = tl;
+  </script>
+</template>

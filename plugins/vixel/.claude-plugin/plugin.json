@@ -1,7 +1,7 @@
 {
   "name": "vixel",
-  "version": "1.0.0-alpha.7",
-  "description": "Make films in your Vixel Works from Claude Code: scripts, production plans, quoted image and video production, review, export and Remotion finishing, a kit for cartoon animal-facts shorts, and trend remakes starring your pet, your character or you, with browser sign-in.",
+  "version": "1.0.0-alpha.8",
+  "description": "Make films in your Vixel Works from Claude Code: scripts, production plans, quoted image and video production, review, export and Remotion finishing, a kit for cartoon animal-facts shorts, code-animated motion videos, and trend remakes starring your pet, your character or you, with browser sign-in.",
   "author": {
     "name": "Vixel AI",
     "url": "https://www.vixelai.com/"
@@ -9,5 +9,5 @@
   "homepage": "https://drama.vixelai.com/creator/mcp",
   "repository": "https://github.com/Vixel-AI/vixel-plugins",
   "license": "Proprietary",
-  "keywords": ["vixel", "film", "video", "storyboard", "remotion", "mcp", "animal-facts", "trend-remake"]
+  "keywords": ["vixel", "film", "video", "storyboard", "remotion", "mcp", "animal-facts", "motion-graphics", "trend-remake"]
 }
