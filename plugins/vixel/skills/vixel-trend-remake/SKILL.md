@@ -129,8 +129,26 @@ cleaner. Without a computer, skip this section and pass the reel link. You need
    If the original dancer, a human body part where there should be none, or
    the original's text shows, offer `film_v1_remake_redo`; it costs credits,
    so ask the creator first.
-7. **Longer reels.** One remake covers one shot of up to 15 s. For a longer
-   reel, or one with several shots, prepare the best single shot.
+7. **Longer reels: one take per shot.** One take covers one shot of up to
+   15 s. For a longer reel, or one with several shots, cut it into back-to-back
+   windows, each one continuous shot of 5-15 s in whole seconds, and prepare
+   each as its own clip (steps 2-4). Make the remake with the first clip. Once
+   `film_v1_remake` reaches `making_video` or `done`, add each further clip as
+   another take of the same look: `film_v1_remake_quote` with the remake's
+   `projectId` and that `clipAssetId` (nothing else) quotes only the take; on
+   the creator's yes, `film_v1_remake_generate` with the same two fields, the
+   `quoteId`, `maxCredits`, `clipRightsConfirmed: true` and a new
+   `idempotencyKey`. `film_v1_remake` lists every take in `takes`, in order,
+   each with its own `videoUrl` when done. Check each take (step 6), then join
+   them under the reel's own sound from the first window's start (`START`).
+   A take can run a little past its window, so trim each to its window's
+   length (`D1`, `D2`, …) and give all the same size (your clips' `W:H`) and
+   frame rate:
+   `ffmpeg -i take-1.mp4 -i take-2.mp4 -ss START -i reel.mp4 -filter_complex "[0:v]trim=duration=D1,setpts=PTS-STARTPTS,fps=30,scale=W:H,setsar=1[t1];[1:v]trim=duration=D2,setpts=PTS-STARTPTS,fps=30,scale=W:H,setsar=1[t2];[t1][t2]concat=n=2:v=1:a=0[v]" -map "[v]" -map 2:a -c:v libx264 -crf 18 -pix_fmt yuv420p -c:a aac -b:a 192k -shortest -movflags +faststart remake.mp4`
+   For three takes add `-i take-3.mp4`, a `[2:v]…[t3]` block, `[t3]` and
+   `n=3`, and map the reel as `3:a`. Watch the joins, then post `remake.mp4`
+   from the creator's phone app, or upload it as a release with
+   `film_v1_release_upload_intent` and `film_v1_release_upload_finalize`.
 
 ## 2. Quote, confirm, make
 
