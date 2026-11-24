@@ -10,12 +10,12 @@
     ],
     "serverName": "vixel-film",
     "toolCount": 46,
-    "toolSchemaSha256": "80be8ecdfa1ecf948354fae0b75c113ad5cb1bca913bef46435451429d9e7fa6"
+    "toolSchemaSha256": "928ee9b5991034e3822b33c82ada3abafc09d7ecfea508a918b620fa5b0c227e"
   },
   "plugin": {
     "name": "vixel-creator",
     "releaseChannel": "developer-preview",
-    "version": "1.0.0-alpha.12"
+    "version": "1.0.0-alpha.13"
   },
   "schemaVersion": 1
 }

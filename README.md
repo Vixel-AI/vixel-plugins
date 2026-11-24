@@ -146,8 +146,9 @@ Vixel picks the part to recreate and makes the remake on its servers after you
 confirm the credits; the Skill helps your agent choose a reel that works, check
 the result and post it with the trend's sound and credit to the original
 dancer. An agent with a terminal and `ffmpeg` also prepares the clip itself
-(one continuous shot, burned-in text cleared) and checks the take before you
-see it; MCP clients get the same guide as the `remake_trend` prompt. Paste this
+(one continuous shot, burned-in text cleared), checks the take before you
+see it, and makes a longer reel one take per shot with the same look; MCP
+clients get the same guide as the `remake_trend` prompt. Paste this
 into your agent:
 
 ```text

@@ -1,6 +1,6 @@
 # Vixel for Claude Code
 
-Version `1.0.0-alpha.8` connects Claude Code to your Vixel account with browser
+Version `1.0.0-alpha.9` connects Claude Code to your Vixel account with browser
 sign-in. It adds the Vixel MCP server and four Skills:
 
 - `vixel-film` follows Vixel's current method: draft and approve a Script, plan
@@ -18,9 +18,10 @@ sign-in. It adds the Vixel MCP server and four Skills:
   recreate and makes the remake after you confirm the credits; the Skill helps
   you choose a reel that works, review the result and post it with the trend's
   sound and credit to the original dancer. With `ffmpeg` on your computer, it
-  also prepares the clip (one shot, burned-in text cleared) and checks the take
-  for traces of the original dancer. Other real people, celebrities, minors and
-  characters someone else owns are not allowed.
+  also prepares the clip (one shot, burned-in text cleared), checks the take
+  for traces of the original dancer, and makes a longer reel one take per shot
+  with the same look, joined under the reel's sound. Other real people,
+  celebrities, minors and characters someone else owns are not allowed.
 
 ```text
 /plugin marketplace add Vixel-AI/vixel-plugins
